@@ -1,0 +1,492 @@
+[
+  {
+    "id": 1,
+    "nombre": "Inka Cola personal 500ml",
+    "categoria": "Bebidas",
+    "precio": 3.00,
+    "image": null
+  },
+  {
+    "id": 2,
+    "nombre": "Coca Cola personal 500ml",
+    "categoria": "Bebidas",
+    "precio": 3.00,
+    "image": null
+  },
+  {
+    "id": 3,
+    "nombre": "Cielo 625 ml",
+    "categoria": "Bebidas",
+    "precio": 1.50,
+    "image": null
+  },
+  {
+    "id": 4,
+    "nombre": "Cielo chupon 1L",
+    "categoria": "Bebidas",
+    "precio": 2.50,
+    "image": null
+  },
+  {
+    "id": 5,
+    "nombre": "San Mateo 625ml",
+    "categoria": "Bebidas",
+    "precio": 2.00,
+    "image": null
+  },
+  {
+    "id": 6,
+    "nombre": "Fanta 625 ml",
+    "categoria": "Bebidas",
+    "precio": 2.50,
+    "image": null
+  },
+  {
+    "id": 7,
+    "nombre": "Sprite 625 ml",
+    "categoria": "Bebidas",
+    "precio": 2.50,
+    "image": null
+  },
+  {
+    "id": 8,
+    "nombre": "Coca Cola 1L",
+    "categoria": "Bebidas",
+    "precio": 4.50,
+    "image": null
+  },
+  {
+    "id": 9,
+    "nombre": "Inka Cola 1L",
+    "categoria": "Bebidas",
+    "precio": 4.50,
+    "image": null
+  },
+  {
+    "id": 10,
+    "nombre": "Coca Cola 1.5L",
+    "categoria": "Bebidas",
+    "precio": 6.50,
+    "image": null
+  },
+  {
+    "id": 11,
+    "nombre": "Inka Cola 1.5L",
+    "categoria": "Bebidas",
+    "precio": 6.50,
+    "image": null
+  },
+  {
+    "id": 12,
+    "nombre": "Inka Cola 3L",
+    "categoria": "Bebidas",
+    "precio": 13.00,
+    "image": null
+  },
+  {
+    "id": 13,
+    "nombre": "Coca Cola 3L",
+    "categoria": "Bebidas",
+    "precio": 13.00,
+    "image": null
+  },
+  {
+    "id": 14,
+    "nombre": "Pepsi 2L",
+    "categoria": "Bebidas",
+    "precio": 5.50,
+    "image": null
+  },
+  {
+    "id": 15,
+    "nombre": "Casino Chocolate",
+    "categoria": "Galletas",
+    "precio": 1.20,
+    "image": "assets/images/products/casino_chocolate.png"
+  },
+  {
+    "id": 16,
+    "nombre": "Casino Menta",
+    "categoria": "Galletas",
+    "precio": 1.20,
+    "image": "assets/images/products/casino_menta.png"
+  },
+  {
+    "id": 17,
+    "nombre": "Oreo Original",
+    "categoria": "Galletas",
+    "precio": 1.50,
+    "image": "assets/images/products/oreo_original.png"
+  },
+  {
+    "id": 18,
+    "nombre": "Morochas",
+    "categoria": "Galletas",
+    "precio": 1.50,
+    "image": "assets/images/products/morochas.png"
+  },
+  {
+    "id": 19,
+    "nombre": "Soda San Jorge",
+    "categoria": "Galletas",
+    "precio": 1.00,
+    "image": "assets/images/products/soda_san_jorge.png"
+  },
+  {
+    "id": 20,
+    "nombre": "Ritz Clásica",
+    "categoria": "Galletas",
+    "precio": 1.50,
+    "image": "assets/images/products/ritz_clasica.png"
+  },
+  {
+    "id": 21,
+    "nombre": "Papas Lays Clásicas 160g",
+    "categoria": "Frituras",
+    "precio": 7.50,
+    "image": "assets/images/products/lays_clasicas_160g.png"
+  },
+  {
+    "id": 22,
+    "nombre": "Doritos Mega Queso 155g",
+    "categoria": "Frituras",
+    "precio": 7.50,
+    "image": "assets/images/products/doritos_mega_queso_155g.png"
+  },
+  {
+    "id": 23,
+    "nombre": "Piqueo Snax Grande 210g",
+    "categoria": "Frituras",
+    "precio": 9.00,
+    "image": "assets/images/products/piqueo_snax_210g.png"
+  },
+  {
+    "id": 24,
+    "nombre": "Cuates Picantes 150g",
+    "categoria": "Frituras",
+    "precio": 4.50,
+    "image": "assets/images/products/cuates_picantes_150g.png"
+  },
+  {
+    "id": 25,
+    "nombre": "Maní Salado Karinto 100g",
+    "categoria": "Frituras",
+    "precio": 3.50,
+    "image": "assets/images/products/mani_salado_karinto_100g.png"
+  },
+  {
+    "id": 26,
+    "nombre": "Halls Negro Extra Fuerte",
+    "categoria": "Chicles y mentas",
+    "precio": 1.50,
+    "image": "assets/images/products/halls_negro.png"
+  },
+  {
+    "id": 27,
+    "nombre": "Halls Cereza",
+    "categoria": "Chicles y mentas",
+    "precio": 1.50,
+    "image": "assets/images/products/halls_cereza.png"
+  },
+  {
+    "id": 28,
+    "nombre": "Trident Menta",
+    "categoria": "Chicles y mentas",
+    "precio": 1.50,
+    "image": "assets/images/products/trident_menta.png"
+  },
+  {
+    "id": 29,
+    "nombre": "Trident Hierbabuena",
+    "categoria": "Chicles y mentas",
+    "precio": 1.50,
+    "image": "assets/images/products/trident_hierbabuena.png"
+  },
+  {
+    "id": 30,
+    "nombre": "Clorets Clásico",
+    "categoria": "Chicles y mentas",
+    "precio": 1.00,
+    "image": "assets/images/products/clorets_clasico.png"
+  },
+  {
+    "id": 31,
+    "nombre": "Lucky Strike Convertibles 20s",
+    "categoria": "Cigarrillos",
+    "precio": 18.00,
+    "image": "assets/images/products/lucky_strike_convertibles_20s.png"
+  },
+  {
+    "id": 32,
+    "nombre": "Lucky Strike Doble Click 20s",
+    "categoria": "Cigarrillos",
+    "precio": 19.00,
+    "image": "assets/images/products/lucky_strike_doble_click_20s.png"
+  },
+  {
+    "id": 33,
+    "nombre": "Hamilton Rojo Box 20s",
+    "categoria": "Cigarrillos",
+    "precio": 16.00,
+    "image": "assets/images/products/hamilton_rojo_20s.png"
+  },
+  {
+    "id": 34,
+    "nombre": "Marlboro Rojo Box 20s",
+    "categoria": "Cigarrillos",
+    "precio": 20.00,
+    "image": "assets/images/products/marlboro_rojo_20s.png"
+  },
+  {
+    "id": 35,
+    "nombre": "Encendedor Clásico",
+    "categoria": "Cigarrillos",
+    "precio": 3.00,
+    "image": "assets/images/products/encendedor_clasico.png"
+  },
+  {
+    "id": 36,
+    "nombre": "Santiago Queirolo Borgoña 750ml",
+    "categoria": "Vino",
+    "precio": 24.00,
+    "image": "assets/images/products/queirolo_borgona_750ml.png"
+  },
+  {
+    "id": 37,
+    "nombre": "Santiago Queirolo Magdalena 750ml",
+    "categoria": "Vino",
+    "precio": 25.00,
+    "image": "assets/images/products/queirolo_magdalena_750ml.png"
+  },
+  {
+    "id": 38,
+    "nombre": "Tabernero Borgoña Selección Especial 750ml",
+    "categoria": "Vino",
+    "precio": 26.00,
+    "image": "assets/images/products/tabernero_borgona_750ml.png"
+  },
+  {
+    "id": 39,
+    "nombre": "Tacama Selección Especial Tinto 750ml",
+    "categoria": "Vino",
+    "precio": 36.00,
+    "image": "assets/images/products/tacama_seleccion_especial_750ml.png"
+  },
+  {
+    "id": 40,
+    "nombre": "Casillero del Diablo Cabernet 750ml",
+    "categoria": "Vino",
+    "precio": 42.00,
+    "image": "assets/images/products/casillero_diablo_cabernet_750ml.png"
+  },
+  {
+    "id": 41,
+    "nombre": "Pisco Portón Mosto Verde Acholado 750ml",
+    "categoria": "Pisco",
+    "precio": 89.00,
+    "image": "assets/images/products/pisco_porton_acholado_750ml.png"
+  },
+  {
+    "id": 42,
+    "nombre": "Santiago Queirolo Quebranta 750ml",
+    "categoria": "Pisco",
+    "precio": 36.00,
+    "image": "assets/images/products/queirolo_quebranta_750ml.png"
+  },
+  {
+    "id": 43,
+    "nombre": "Santiago Queirolo Acholado 750ml",
+    "categoria": "Pisco",
+    "precio": 38.00,
+    "image": "assets/images/products/queirolo_acholado_750ml.png"
+  },
+  {
+    "id": 44,
+    "nombre": "Pisco Cuatro Gallos Quebranta 750ml",
+    "categoria": "Pisco",
+    "precio": 48.00,
+    "image": "assets/images/products/cuatro_gallos_quebranta_750ml.png"
+  },
+  {
+    "id": 45,
+    "nombre": "Tabernero Pisco Quebranta 750ml",
+    "categoria": "Pisco",
+    "precio": 35.00,
+    "image": "assets/images/products/tabernero_quebranta_750ml.png"
+  },
+  {
+    "id": 46,
+    "nombre": "Vodka Absolut Original 750ml",
+    "categoria": "Vodkas",
+    "precio": 58.00,
+    "image": "assets/images/products/absolut_vodka_750ml.png"
+  },
+  {
+    "id": 47,
+    "nombre": "Vodka Smirnoff Red No. 21 750ml",
+    "categoria": "Vodkas",
+    "precio": 42.00,
+    "image": "assets/images/products/smirnoff_red_750ml.png"
+  },
+  {
+    "id": 48,
+    "nombre": "Vodka Smirnoff Green Apple 750ml",
+    "categoria": "Vodkas",
+    "precio": 45.00,
+    "image": "assets/images/products/smirnoff_green_apple_750ml.png"
+  },
+  {
+    "id": 49,
+    "nombre": "Vodka Russkaya 750ml",
+    "categoria": "Vodkas",
+    "precio": 28.00,
+    "image": "assets/images/products/vodka_russkaya_750ml.png"
+  },
+  {
+    "id": 50,
+    "nombre": "Ron Cartavio Black Añejo 750ml",
+    "categoria": "Ron",
+    "precio": 32.00,
+    "image": "assets/images/products/cartavio_black_750ml.png"
+  },
+  {
+    "id": 51,
+    "nombre": "Ron Cartavio Selecto 750ml",
+    "categoria": "Ron",
+    "precio": 26.00,
+    "image": "assets/images/products/cartavio_selecto_750ml.png"
+  },
+  {
+    "id": 52,
+    "nombre": "Ron Flor de Caña 4 Años 750ml",
+    "categoria": "Ron",
+    "precio": 45.00,
+    "image": "assets/images/products/flor_de_cana_4_750ml.png"
+  },
+  {
+    "id": 53,
+    "nombre": "Ron Flor de Caña 7 Años 750ml",
+    "categoria": "Ron",
+    "precio": 65.00,
+    "image": "assets/images/products/flor_de_cana_7_750ml.png"
+  },
+  {
+    "id": 54,
+    "nombre": "Ron Barceló Gran Añejo 750ml",
+    "categoria": "Ron",
+    "precio": 52.00,
+    "image": "assets/images/products/barcelo_gran_anejo_750ml.png"
+  },
+  {
+    "id": 55,
+    "nombre": "Pilsen Callao Botella 630ml",
+    "categoria": "Cervezas",
+    "subcategoria": "Botellas",
+    "precio": 8.50,
+    "image": "assets/images/products/pilsen_botella_630ml.png"
+  },
+  {
+    "id": 56,
+    "nombre": "Cusqueña Dorada 330ml",
+    "categoria": "Cervezas",
+    "subcategoria": "Botellas",
+    "precio": 7.00,
+    "image": "assets/images/products/cusquena_dorada_330ml.png"
+  },
+  {
+    "id": 57,
+    "nombre": "Cusqueña Trigo 330ml",
+    "categoria": "Cervezas",
+    "subcategoria": "Botellas",
+    "precio": 7.00,
+    "image": "assets/images/products/cusquena_trigo_330ml.png"
+  },
+  {
+    "id": 58,
+    "nombre": "Cusqueña Negra 330ml",
+    "categoria": "Cervezas",
+    "subcategoria": "Botellas",
+    "precio": 7.00,
+    "image": "assets/images/products/cusquena_negra_330ml.png"
+  },
+  {
+    "id": 59,
+    "nombre": "Corona Extra Botella 355ml",
+    "categoria": "Cervezas",
+    "subcategoria": "Botellas",
+    "precio": 8.00,
+    "image": "assets/images/products/corona_extra_botella_355ml.png"
+  },
+  {
+    "id": 60,
+    "nombre": "Stella Artois Botella 330ml",
+    "categoria": "Cervezas",
+    "subcategoria": "Botellas",
+    "precio": 8.50,
+    "image": "assets/images/products/stella_artois_330ml.png"
+  },
+  {
+    "id": 61,
+    "nombre": "Heineken Botella 330ml",
+    "categoria": "Cervezas",
+    "subcategoria": "Botellas",
+    "precio": 8.50,
+    "image": "assets/images/products/heineken_botella_330ml.png"
+  },
+  {
+    "id": 62,
+    "nombre": "Pilsen Callao Lata 355ml",
+    "categoria": "Cervezas",
+    "subcategoria": "Latas",
+    "precio": 6.00,
+    "image": "assets/images/products/pilsen_lata_355ml.png"
+  },
+  {
+    "id": 63,
+    "nombre": "Cusqueña Dorada Lata 355ml",
+    "categoria": "Cervezas",
+    "subcategoria": "Latas",
+    "precio": 6.50,
+    "image": "assets/images/products/cusquena_dorada_lata_355ml.png"
+  },
+  {
+    "id": 64,
+    "nombre": "Cusqueña Trigo Lata 355ml",
+    "categoria": "Cervezas",
+    "subcategoria": "Latas",
+    "precio": 6.50,
+    "image": "assets/images/products/cusquena_trigo_lata_355ml.png"
+  },
+  {
+    "id": 65,
+    "nombre": "Cristal Lata 355ml",
+    "categoria": "Cervezas",
+    "subcategoria": "Latas",
+    "precio": 5.50,
+    "image": "assets/images/products/cristal_lata_355ml.png"
+  },
+  {
+    "id": 66,
+    "nombre": "Corona Extra Lata 355ml",
+    "categoria": "Cervezas",
+    "subcategoria": "Latas",
+    "precio": 7.50,
+    "image": "assets/images/products/corona_extra_lata_355ml.png"
+  },
+  {
+    "id": 67,
+    "nombre": "Six Pack Pilsen Callao Latas",
+    "categoria": "Cervezas",
+    "subcategoria": "Latas",
+    "precio": 32.00,
+    "image": "assets/images/products/six_pack_pilsen_latas.png"
+  },
+  {
+    "id": 68,
+    "nombre": "Six Pack Cusqueña Dorada Latas",
+    "categoria": "Cervezas",
+    "subcategoria": "Latas",
+    "precio": 35.00,
+    "image": "assets/images/products/six_pack_cusquena_dorada.png"
+  }
+]

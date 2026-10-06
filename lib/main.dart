@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'core/theme/app_theme.dart';
 import 'presentation/home/home_screen.dart';
+import 'repositories/catalog_repository.dart';
+import 'repositories/sales_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('es_ES', null);
+  await CatalogRepository().loadProducts();
+  await SalesRepository().loadSales();
   runApp(const LicoreriaApp());
 }
 
