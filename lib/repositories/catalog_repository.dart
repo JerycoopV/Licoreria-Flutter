@@ -79,16 +79,44 @@ class CatalogRepository extends ChangeNotifier {
         ),
       ],
     ),
+    const Category(
+      id: 'bebidas_alcoholicas_preparadas',
+      name: 'Bebidas alcohólicas preparadas',
+      icon: Icons.nightlife_rounded,
+      accentColor: Color(0xFF8B5CF6), // Violet
+    ),
   ];
+
+  static String _normalize(String text) {
+    return text
+        .toLowerCase()
+        .trim()
+        .replaceAll('á', 'a')
+        .replaceAll('é', 'e')
+        .replaceAll('í', 'i')
+        .replaceAll('ó', 'o')
+        .replaceAll('ú', 'u')
+        .replaceAll('_', ' ');
+  }
 
   static Category? getCategoryById(String id) {
     try {
       final clean = id.toLowerCase().trim();
-      return categories.firstWhere((cat) =>
-          cat.id.toLowerCase() == clean ||
-          cat.name.toLowerCase() == clean ||
-          (clean == 'cigarros' && cat.id == 'cigarrillos') ||
-          (clean == 'cigarrillos' && cat.id == 'cigarrillos'));
+      final norm = _normalize(clean);
+      return categories.firstWhere((cat) {
+        final catId = cat.id.toLowerCase().trim();
+        final catName = cat.name.toLowerCase().trim();
+        return catId == clean ||
+            catName == clean ||
+            _normalize(catId) == norm ||
+            _normalize(catName) == norm ||
+            (clean == 'cigarros' && cat.id == 'cigarrillos') ||
+            (clean == 'cigarrillos' && cat.id == 'cigarrillos') ||
+            (norm == 'bebidas preparadas' &&
+                cat.id == 'bebidas_alcoholicas_preparadas') ||
+            (clean == 'bebidas_preparadas' &&
+                cat.id == 'bebidas_alcoholicas_preparadas');
+      });
     } catch (_) {
       return null;
     }
@@ -150,21 +178,44 @@ class CatalogRepository extends ChangeNotifier {
   List<Product> getProductsByCategory(String categoryIdentifier,
       {String? subcategoryId}) {
     final clean = categoryIdentifier.toLowerCase().trim();
+    final catObj = getCategoryById(clean);
+    final validNorms = <String>{
+      clean,
+      _normalize(clean),
+      if (catObj != null) ...[
+        catObj.id.toLowerCase().trim(),
+        catObj.name.toLowerCase().trim(),
+        _normalize(catObj.id),
+        _normalize(catObj.name),
+      ],
+    };
+
     return _products.where((p) {
       final pCat = p.categoria.toLowerCase().trim();
       final pCatId = p.categoryId.toLowerCase().trim();
-      final matchesCategory = pCat == clean ||
-          pCatId == clean ||
-          (clean == 'cigarrillos' && (pCat == 'cigarros' || pCatId == 'cigarros')) ||
-          (clean == 'cigarros' && (pCat == 'cigarrillos' || pCatId == 'cigarrillos'));
+      final pCatNorm = _normalize(p.categoria);
+      final pCatIdNorm = _normalize(p.categoryId);
+
+      final matchesCategory = validNorms.contains(pCat) ||
+          validNorms.contains(pCatId) ||
+          validNorms.contains(pCatNorm) ||
+          validNorms.contains(pCatIdNorm) ||
+          (clean == 'cigarrillos' &&
+              (pCat == 'cigarros' || pCatId == 'cigarros')) ||
+          (clean == 'cigarros' &&
+              (pCat == 'cigarrillos' || pCatId == 'cigarrillos'));
       if (!matchesCategory) return false;
 
       if (subcategoryId != null && subcategoryId.trim().isNotEmpty) {
         final cleanSub = subcategoryId.toLowerCase().trim();
+        final cleanSubNorm = _normalize(subcategoryId);
         final pSub = (p.subcategoryId ?? '').toLowerCase().trim();
+        final pSubNorm = _normalize(p.subcategoryId ?? '');
         if (pSub.isNotEmpty &&
             !pSub.contains(cleanSub) &&
-            !cleanSub.contains(pSub)) {
+            !cleanSub.contains(pSub) &&
+            !pSubNorm.contains(cleanSubNorm) &&
+            !cleanSubNorm.contains(pSubNorm)) {
           return false;
         }
       }
@@ -183,20 +234,42 @@ class CatalogRepository extends ChangeNotifier {
       return _products;
     }
 
+    final catObj = categoryId != null ? getCategoryById(categoryId) : null;
+    final validNorms = categoryId != null
+        ? <String>{
+            categoryId.toLowerCase().trim(),
+            _normalize(categoryId),
+            if (catObj != null) ...[
+              catObj.id.toLowerCase().trim(),
+              catObj.name.toLowerCase().trim(),
+              _normalize(catObj.id),
+              _normalize(catObj.name),
+            ],
+          }
+        : null;
+
     return _products.where((p) {
-      if (categoryId != null) {
+      if (validNorms != null) {
         final pCat = p.categoria.toLowerCase().trim();
         final pCatId = p.categoryId.toLowerCase().trim();
-        final clean = categoryId.toLowerCase().trim();
-        final matches = pCat == clean || pCatId == clean;
+        final pCatNorm = _normalize(p.categoria);
+        final pCatIdNorm = _normalize(p.categoryId);
+        final matches = validNorms.contains(pCat) ||
+            validNorms.contains(pCatId) ||
+            validNorms.contains(pCatNorm) ||
+            validNorms.contains(pCatIdNorm);
         if (!matches) return false;
       }
       if (subcategoryId != null && subcategoryId.isNotEmpty) {
         final cleanSub = subcategoryId.toLowerCase().trim();
+        final cleanSubNorm = _normalize(subcategoryId);
         final pSub = (p.subcategoryId ?? '').toLowerCase().trim();
+        final pSubNorm = _normalize(p.subcategoryId ?? '');
         if (pSub.isNotEmpty &&
             !pSub.contains(cleanSub) &&
-            !cleanSub.contains(pSub)) {
+            !cleanSub.contains(pSub) &&
+            !pSubNorm.contains(cleanSubNorm) &&
+            !cleanSubNorm.contains(pSubNorm)) {
           return false;
         }
       }

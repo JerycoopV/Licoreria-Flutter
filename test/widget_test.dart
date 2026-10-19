@@ -51,7 +51,7 @@ void main() {
     expect(find.text('Menú de Categorías'), findsOneWidget);
     expect(find.text('Selecciona una Categoría'), findsOneWidget);
 
-    // Verificar que las 10 categorías están presentes en el catálogo
+    // Verificar que todas las categorías están presentes en el catálogo
     final expectedCategories = [
       'Bebidas',
       'Galletas',
@@ -63,6 +63,7 @@ void main() {
       'Vodkas',
       'Ron',
       'Cervezas',
+      'Bebidas alcohólicas preparadas',
     ];
 
     for (final catName in expectedCategories) {
@@ -282,7 +283,7 @@ void main() {
     expect(recordedSale.metodoPago, 'Yape');
   });
 
-  testWidgets('8. Categoría Bebidas: Muestra exactamente los 14 productos con sus nombres, precios y fallback visual', (WidgetTester tester) async {
+  testWidgets('8. Categoría Bebidas: Muestra exactamente los 23 productos con sus nombres, precios y fallback visual', (WidgetTester tester) async {
     tester.view.physicalSize = const Size(1080, 2160);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -292,8 +293,8 @@ void main() {
     final bebidasCategory = CatalogRepository.getCategoryById('bebidas')!;
     final bebidasProducts = CatalogRepository().getProductsByCategory('bebidas');
 
-    // 1. Verificar conteo exacto de 14 productos
-    expect(bebidasProducts.length, 14);
+    // 1. Verificar conteo exacto de 23 productos
+    expect(bebidasProducts.length, 23);
 
     final expectedProducts = [
       {'nombre': 'Inka Cola personal 500ml', 'precio': 3.00},
@@ -310,6 +311,15 @@ void main() {
       {'nombre': 'Inka Cola 3L', 'precio': 13.00},
       {'nombre': 'Coca Cola 3L', 'precio': 13.00},
       {'nombre': 'Pepsi 2L', 'precio': 5.50},
+      {'nombre': 'Fanta 500ml', 'precio': 2.50},
+      {'nombre': 'Hey Frit 600ml', 'precio': 2.50},
+      {'nombre': 'San Mateo 600ml', 'precio': 2.00},
+      {'nombre': 'San Luis 625ml', 'precio': 2.00},
+      {'nombre': 'Sporade 500ml', 'precio': 2.50},
+      {'nombre': 'Sporade 1.5L', 'precio': 5.50},
+      {'nombre': 'Inka Cola piraña 192ml', 'precio': 1.20},
+      {'nombre': 'Coca Cola piraña 192ml', 'precio': 1.20},
+      {'nombre': 'Fanta cola piraña 192ml', 'precio': 1.20},
     ];
 
     // 2. Verificar datos exactos en el catálogo: nombres, precios numéricos y image == null
@@ -333,11 +343,37 @@ void main() {
 
     // 4. Verificar cabecera y contador en pantalla
     expect(find.text('Bebidas'), findsAtLeastNWidgets(1));
-    expect(find.text('14 productos disponibles'), findsOneWidget);
+    expect(find.text('23 productos disponibles'), findsOneWidget);
 
     // 5. Verificar productos visibles y formato de precio S/.
     expect(find.text('Inka Cola personal 500ml'), findsOneWidget);
     expect(find.text('S/. 3.00'), findsAtLeastNWidgets(1));
     expect(find.text('Sprite 625 ml'), findsOneWidget);
+  });
+
+  testWidgets('9. Categoría Bebidas alcohólicas preparadas: Muestra productos y permite visualización', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 2160);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await CatalogRepository().loadProducts();
+    final preparadasCategory = CatalogRepository.getCategoryById('bebidas_alcoholicas_preparadas');
+    expect(preparadasCategory, isNotNull);
+    expect(preparadasCategory!.name, 'Bebidas alcohólicas preparadas');
+
+    final preparadasProducts = CatalogRepository().getProductsByCategory('bebidas_alcoholicas_preparadas');
+    expect(preparadasProducts.isNotEmpty, isTrue);
+    expect(preparadasProducts.any((p) => p.name.contains("Mike's")), isTrue);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: CategoryDetailScreen(category: preparadasCategory),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Bebidas alcohólicas preparadas'), findsAtLeastNWidgets(1));
+    expect(find.textContaining("Mike's"), findsOneWidget);
   });
 }
