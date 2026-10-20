@@ -85,6 +85,24 @@ class CatalogRepository extends ChangeNotifier {
       icon: Icons.nightlife_rounded,
       accentColor: Color(0xFF8B5CF6), // Violet
     ),
+    const Category(
+      id: 'whisky',
+      name: 'Whisky',
+      icon: Icons.liquor_outlined,
+      accentColor: Color(0xFFEA580C), // Amber/Whisky
+    ),
+    const Category(
+      id: 'combos',
+      name: 'Combos',
+      icon: Icons.inventory_2_rounded,
+      accentColor: Color(0xFFEC4899), // Pink
+    ),
+    const Category(
+      id: 'hielo',
+      name: 'Hielo',
+      icon: Icons.ac_unit_rounded,
+      accentColor: Color(0xFF0284C7), // Sky/Ice Blue
+    ),
   ];
 
   static String _normalize(String text) {
@@ -115,7 +133,14 @@ class CatalogRepository extends ChangeNotifier {
             (norm == 'bebidas preparadas' &&
                 cat.id == 'bebidas_alcoholicas_preparadas') ||
             (clean == 'bebidas_preparadas' &&
-                cat.id == 'bebidas_alcoholicas_preparadas');
+                cat.id == 'bebidas_alcoholicas_preparadas') ||
+            (clean == 'whiskey' && cat.id == 'whisky') ||
+            (clean == 'whisky' && cat.id == 'whisky') ||
+            (clean == 'combo' && cat.id == 'combos') ||
+            (clean == 'hielos' && cat.id == 'hielo') ||
+            (clean == 'vodka' && cat.id == 'vodkas') ||
+            (clean == 'rones' && cat.id == 'ron') ||
+            (clean == 'vinos' && cat.id == 'vino');
       });
     } catch (_) {
       return null;

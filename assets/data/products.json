@@ -162,286 +162,461 @@
   },
   {
     "id": 24,
-    "nombre": "Casino Chocolate",
+    "nombre": "Club Soda 24g",
     "categoria": "Galletas",
-    "precio": 1.2,
-    "image": "assets/images/products/casino_chocolate.png"
+    "precio": 1.0,
+    "image": null
   },
   {
     "id": 25,
-    "nombre": "Casino Menta",
+    "nombre": "Ritz 20g",
     "categoria": "Galletas",
-    "precio": 1.2,
-    "image": "assets/images/products/casino_menta.png"
+    "precio": 1.0,
+    "image": null
   },
   {
     "id": 26,
-    "nombre": "Oreo Original",
+    "nombre": "Vainilla 32g",
     "categoria": "Galletas",
     "precio": 1.5,
-    "image": "assets/images/products/oreo_original.png"
+    "image": null
   },
   {
     "id": 27,
-    "nombre": "Morochas",
+    "nombre": "Frac",
     "categoria": "Galletas",
-    "precio": 1.5,
-    "image": "assets/images/products/morochas.png"
+    "precio": 2.0,
+    "image": null
   },
   {
     "id": 28,
-    "nombre": "Soda San Jorge",
+    "nombre": "Chomp 28g",
     "categoria": "Galletas",
-    "precio": 1.0,
-    "image": "assets/images/products/soda_san_jorge.png"
+    "precio": 2.0,
+    "image": null
   },
   {
     "id": 29,
-    "nombre": "Ritz Clásica",
+    "nombre": "Choco chips 34g",
     "categoria": "Galletas",
-    "precio": 1.5,
-    "image": "assets/images/products/ritz_clasica.png"
+    "precio": 2.0,
+    "image": null
   },
   {
     "id": 30,
+    "nombre": "Tentación 43g",
+    "categoria": "Galletas",
+    "precio": 2.0,
+    "image": null
+  },
+  {
+    "id": 31,
+    "nombre": "Black Out 38g",
+    "categoria": "Galletas",
+    "precio": 1.0,
+    "image": null
+  },
+  {
+    "id": 32,
+    "nombre": "Casino 43g",
+    "categoria": "Galletas",
+    "precio": 1.5,
+    "image": null
+  },
+  {
+    "id": 33,
+    "nombre": "Oreo 54g",
+    "categoria": "Galletas",
+    "precio": 2.0,
+    "image": null
+  },
+  {
+    "id": 34,
+    "nombre": "Ritz 75g",
+    "categoria": "Galletas",
+    "precio": 3.0,
+    "image": null
+  },
+  {
+    "id": 35,
+    "nombre": "Ritz 70g",
+    "categoria": "Galletas",
+    "precio": 2.0,
+    "image": null
+  },
+  {
+    "id": 36,
+    "nombre": "Oreo 108g",
+    "categoria": "Galletas",
+    "precio": 2.5,
+    "image": null
+  },
+  {
+    "id": 37,
+    "nombre": "Nix 72g",
+    "categoria": "Galletas",
+    "precio": 2.0,
+    "image": null
+  },
+  {
+    "id": 38,
     "nombre": "Papas Lays Clásicas 160g",
     "categoria": "Frituras",
     "precio": 7.5,
     "image": "assets/images/products/lays_clasicas_160g.png"
   },
   {
-    "id": 31,
+    "id": 39,
     "nombre": "Doritos Mega Queso 155g",
     "categoria": "Frituras",
     "precio": 7.5,
     "image": "assets/images/products/doritos_mega_queso_155g.png"
   },
   {
-    "id": 32,
+    "id": 40,
     "nombre": "Piqueo Snax Grande 210g",
     "categoria": "Frituras",
     "precio": 9.0,
     "image": "assets/images/products/piqueo_snax_210g.png"
   },
   {
-    "id": 33,
+    "id": 41,
     "nombre": "Cuates Picantes 150g",
     "categoria": "Frituras",
     "precio": 4.5,
     "image": "assets/images/products/cuates_picantes_150g.png"
   },
   {
-    "id": 34,
+    "id": 42,
     "nombre": "Maní Salado Karinto 100g",
     "categoria": "Frituras",
     "precio": 3.5,
     "image": "assets/images/products/mani_salado_karinto_100g.png"
   },
   {
-    "id": 35,
+    "id": 43,
+    "nombre": "Piqueo Snax 55g",
+    "categoria": "Frituras",
+    "precio": 2.2,
+    "image": null
+  },
+  {
+    "id": 44,
+    "nombre": "Papas Lays 39g",
+    "categoria": "Frituras",
+    "precio": 2.0,
+    "image": null
+  },
+  {
+    "id": 45,
+    "nombre": "Cuates 43g",
+    "categoria": "Frituras",
+    "precio": 1.0,
+    "image": null
+  },
+  {
+    "id": 46,
+    "nombre": "Tortees 71g",
+    "categoria": "Frituras",
+    "precio": 2.0,
+    "image": null
+  },
+  {
+    "id": 47,
+    "nombre": "Cheesetris 44g",
+    "categoria": "Frituras",
+    "precio": 1.5,
+    "image": null
+  },
+  {
+    "id": 48,
+    "nombre": "Cheetos 34g",
+    "categoria": "Frituras",
+    "precio": 1.5,
+    "image": null
+  },
+  {
+    "id": 49,
+    "nombre": "Chizitos 35g",
+    "categoria": "Frituras",
+    "precio": 1.0,
+    "image": null
+  },
+  {
+    "id": 50,
+    "nombre": "Inka Chips 115g",
+    "categoria": "Frituras",
+    "precio": 9.0,
+    "image": null
+  },
+  {
+    "id": 51,
+    "nombre": "Inka Chips 34g",
+    "categoria": "Frituras",
+    "precio": 2.5,
+    "image": null
+  },
+  {
+    "id": 52,
     "nombre": "Halls Negro Extra Fuerte",
     "categoria": "Chicles y mentas",
     "precio": 1.5,
     "image": "assets/images/products/halls_negro.png"
   },
   {
-    "id": 36,
+    "id": 53,
     "nombre": "Halls Cereza",
     "categoria": "Chicles y mentas",
     "precio": 1.5,
     "image": "assets/images/products/halls_cereza.png"
   },
   {
-    "id": 37,
+    "id": 54,
     "nombre": "Trident Menta",
     "categoria": "Chicles y mentas",
     "precio": 1.5,
     "image": "assets/images/products/trident_menta.png"
   },
   {
-    "id": 38,
+    "id": 55,
     "nombre": "Trident Hierbabuena",
     "categoria": "Chicles y mentas",
     "precio": 1.5,
     "image": "assets/images/products/trident_hierbabuena.png"
   },
   {
-    "id": 39,
+    "id": 56,
     "nombre": "Clorets Clásico",
     "categoria": "Chicles y mentas",
     "precio": 1.0,
     "image": "assets/images/products/clorets_clasico.png"
   },
   {
-    "id": 40,
-    "nombre": "Lucky Strike Convertibles 20s",
+    "id": 57,
+    "nombre": "Lucky Strike unidad",
     "categoria": "Cigarrillos",
-    "precio": 18.0,
-    "image": "assets/images/products/lucky_strike_convertibles_20s.png"
+    "precio": 1.5,
+    "image": null
   },
   {
-    "id": 41,
-    "nombre": "Lucky Strike Doble Click 20s",
-    "categoria": "Cigarrillos",
-    "precio": 19.0,
-    "image": "assets/images/products/lucky_strike_doble_click_20s.png"
-  },
-  {
-    "id": 42,
-    "nombre": "Hamilton Rojo Box 20s",
+    "id": 58,
+    "nombre": "Lucky Strike Caja de 10",
     "categoria": "Cigarrillos",
     "precio": 16.0,
-    "image": "assets/images/products/hamilton_rojo_20s.png"
+    "image": null
   },
   {
-    "id": 43,
-    "nombre": "Marlboro Rojo Box 20s",
+    "id": 59,
+    "nombre": "Lucky Strike Caja de 20",
     "categoria": "Cigarrillos",
-    "precio": 20.0,
-    "image": "assets/images/products/marlboro_rojo_20s.png"
+    "precio": 24.0,
+    "image": null
   },
   {
-    "id": 44,
+    "id": 60,
+    "nombre": "Pall Mall unidad",
+    "categoria": "Cigarrillos",
+    "precio": 1.0,
+    "image": null
+  },
+  {
+    "id": 61,
+    "nombre": "Pall Mall Caja de 10",
+    "categoria": "Cigarrillos",
+    "precio": 10.0,
+    "image": null
+  },
+  {
+    "id": 62,
+    "nombre": "Pall Mall Caja de 20",
+    "categoria": "Cigarrillos",
+    "precio": 18.0,
+    "image": null
+  },
+  {
+    "id": 63,
+    "nombre": "Esse unidad",
+    "categoria": "Cigarrillos",
+    "precio": 1.0,
+    "image": null
+  },
+  {
+    "id": 64,
+    "nombre": "Esse Cajita",
+    "categoria": "Cigarrillos",
+    "precio": 15.0,
+    "image": null
+  },
+  {
+    "id": 65,
+    "nombre": "Golden Beach unidad",
+    "categoria": "Cigarrillos",
+    "precio": 0.5,
+    "image": null
+  },
+  {
+    "id": 66,
+    "nombre": "Golden Beach Caja",
+    "categoria": "Cigarrillos",
+    "precio": 5.0,
+    "image": null
+  },
+  {
+    "id": 67,
+    "nombre": "Marlboro unidad",
+    "categoria": "Cigarrillos",
+    "precio": 1.5,
+    "image": null
+  },
+  {
+    "id": 68,
+    "nombre": "Marlboro Caja de 10",
+    "categoria": "Cigarrillos",
+    "precio": 15.0,
+    "image": null
+  },
+  {
+    "id": 69,
+    "nombre": "Marlboro Caja de 20",
+    "categoria": "Cigarrillos",
+    "precio": 25.0,
+    "image": null
+  },
+  {
+    "id": 70,
     "nombre": "Encendedor Clásico",
     "categoria": "Cigarrillos",
     "precio": 3.0,
     "image": "assets/images/products/encendedor_clasico.png"
   },
   {
-    "id": 45,
+    "id": 71,
     "nombre": "Santiago Queirolo Borgoña 750ml",
     "categoria": "Vino",
     "precio": 24.0,
     "image": "assets/images/products/queirolo_borgona_750ml.png"
   },
   {
-    "id": 46,
+    "id": 72,
     "nombre": "Santiago Queirolo Magdalena 750ml",
     "categoria": "Vino",
     "precio": 25.0,
     "image": "assets/images/products/queirolo_magdalena_750ml.png"
   },
   {
-    "id": 47,
+    "id": 73,
     "nombre": "Tabernero Borgoña Selección Especial 750ml",
     "categoria": "Vino",
     "precio": 26.0,
     "image": "assets/images/products/tabernero_borgona_750ml.png"
   },
   {
-    "id": 48,
+    "id": 74,
     "nombre": "Tacama Selección Especial Tinto 750ml",
     "categoria": "Vino",
     "precio": 36.0,
     "image": "assets/images/products/tacama_seleccion_especial_750ml.png"
   },
   {
-    "id": 49,
+    "id": 75,
     "nombre": "Casillero del Diablo Cabernet 750ml",
     "categoria": "Vino",
     "precio": 42.0,
     "image": "assets/images/products/casillero_diablo_cabernet_750ml.png"
   },
   {
-    "id": 50,
+    "id": 76,
     "nombre": "Pisco Portón Mosto Verde Acholado 750ml",
     "categoria": "Pisco",
     "precio": 89.0,
     "image": "assets/images/products/pisco_porton_acholado_750ml.png"
   },
   {
-    "id": 51,
+    "id": 77,
     "nombre": "Santiago Queirolo Quebranta 750ml",
     "categoria": "Pisco",
     "precio": 36.0,
     "image": "assets/images/products/queirolo_quebranta_750ml.png"
   },
   {
-    "id": 52,
+    "id": 78,
     "nombre": "Santiago Queirolo Acholado 750ml",
     "categoria": "Pisco",
     "precio": 38.0,
     "image": "assets/images/products/queirolo_acholado_750ml.png"
   },
   {
-    "id": 53,
+    "id": 79,
     "nombre": "Pisco Cuatro Gallos Quebranta 750ml",
     "categoria": "Pisco",
     "precio": 48.0,
     "image": "assets/images/products/cuatro_gallos_quebranta_750ml.png"
   },
   {
-    "id": 54,
+    "id": 80,
     "nombre": "Tabernero Pisco Quebranta 750ml",
     "categoria": "Pisco",
     "precio": 35.0,
     "image": "assets/images/products/tabernero_quebranta_750ml.png"
   },
   {
-    "id": 55,
+    "id": 81,
     "nombre": "Vodka Absolut Original 750ml",
     "categoria": "Vodkas",
-    "precio": 58.0,
+    "precio": 41.0,
     "image": "assets/images/products/absolut_vodka_750ml.png"
   },
   {
-    "id": 56,
+    "id": 82,
     "nombre": "Vodka Smirnoff Red No. 21 750ml",
     "categoria": "Vodkas",
-    "precio": 42.0,
+    "precio": 31.0,
     "image": "assets/images/products/smirnoff_red_750ml.png"
   },
   {
-    "id": 57,
+    "id": 83,
     "nombre": "Vodka Smirnoff Green Apple 750ml",
     "categoria": "Vodkas",
-    "precio": 45.0,
+    "precio": 32.0,
     "image": "assets/images/products/smirnoff_green_apple_750ml.png"
   },
   {
-    "id": 58,
+    "id": 84,
     "nombre": "Vodka Russkaya 750ml",
     "categoria": "Vodkas",
-    "precio": 28.0,
+    "precio": 26.0,
     "image": "assets/images/products/vodka_russkaya_750ml.png"
   },
   {
-    "id": 59,
+    "id": 85,
     "nombre": "Ron Cartavio Black Añejo 750ml",
     "categoria": "Ron",
     "precio": 32.0,
     "image": "assets/images/products/cartavio_black_750ml.png"
   },
   {
-    "id": 60,
+    "id": 86,
     "nombre": "Ron Cartavio Selecto 750ml",
     "categoria": "Ron",
     "precio": 26.0,
     "image": "assets/images/products/cartavio_selecto_750ml.png"
   },
   {
-    "id": 61,
+    "id": 87,
     "nombre": "Ron Flor de Caña 4 Años 750ml",
     "categoria": "Ron",
-    "precio": 45.0,
+    "precio": 40.0,
     "image": "assets/images/products/flor_de_cana_4_750ml.png"
   },
   {
-    "id": 62,
-    "nombre": "Ron Flor de Caña 7 Años 750ml",
-    "categoria": "Ron",
-    "precio": 65.0,
-    "image": "assets/images/products/flor_de_cana_7_750ml.png"
-  },
-  {
-    "id": 63,
+    "id": 89,
     "nombre": "Ron Barceló Gran Añejo 750ml",
     "categoria": "Ron",
     "precio": 52.0,
     "image": "assets/images/products/barcelo_gran_anejo_750ml.png"
   },
   {
-    "id": 64,
+    "id": 90,
     "nombre": "Pilsen Callao Botella 630ml",
     "categoria": "Cervezas",
     "subcategoria": "Botellas",
@@ -449,7 +624,7 @@
     "image": "assets/images/products/pilsen_botella_630ml.png"
   },
   {
-    "id": 65,
+    "id": 91,
     "nombre": "Cusqueña Dorada 620ml",
     "categoria": "Cervezas",
     "subcategoria": "Botellas",
@@ -457,7 +632,7 @@
     "image": "assets/images/products/cusquena_dorada_620ml.png"
   },
   {
-    "id": 66,
+    "id": 92,
     "nombre": "Cusqueña Trigo 620ml",
     "categoria": "Cervezas",
     "subcategoria": "Botellas",
@@ -465,7 +640,7 @@
     "image": "assets/images/products/cusquena_trigo_620ml.png"
   },
   {
-    "id": 67,
+    "id": 93,
     "nombre": "Cusqueña Negra 620ml",
     "categoria": "Cervezas",
     "subcategoria": "Botellas",
@@ -473,7 +648,7 @@
     "image": "assets/images/products/cusquena_negra_620ml.png"
   },
   {
-    "id": 68,
+    "id": 94,
     "nombre": "Corona Extra Botella 355ml",
     "categoria": "Cervezas",
     "subcategoria": "Botellas",
@@ -481,7 +656,7 @@
     "image": "assets/images/products/corona_extra_botella_355ml.png"
   },
   {
-    "id": 69,
+    "id": 95,
     "nombre": "Stella Artois Botella 330ml",
     "categoria": "Cervezas",
     "subcategoria": "Botellas",
@@ -489,7 +664,7 @@
     "image": "assets/images/products/stella_artois_330ml.png"
   },
   {
-    "id": 70,
+    "id": 96,
     "nombre": "Heineken Botella 330ml",
     "categoria": "Cervezas",
     "subcategoria": "Botellas",
@@ -497,15 +672,15 @@
     "image": "assets/images/products/heineken_botella_330ml.png"
   },
   {
-    "id": 71,
+    "id": 97,
     "nombre": "Pilsen Callao margarito 1L",
     "categoria": "Cervezas",
     "subcategoria": "Botellas",
-    "precio": 9.5,
+    "precio": 10.0,
     "image": "assets/images/products/pilsen_margarito_1l.png"
   },
   {
-    "id": 72,
+    "id": 98,
     "nombre": "Cusqueña botella 310ml",
     "categoria": "Cervezas",
     "subcategoria": "Botellas",
@@ -513,7 +688,7 @@
     "image": "assets/images/products/cusquena_botella_310ml.png"
   },
   {
-    "id": 73,
+    "id": 99,
     "nombre": "Corona 330 ml",
     "categoria": "Cervezas",
     "subcategoria": "Botellas",
@@ -521,7 +696,7 @@
     "image": "assets/images/products/corona_330ml.png"
   },
   {
-    "id": 74,
+    "id": 100,
     "nombre": "Six pack corona",
     "categoria": "Cervezas",
     "subcategoria": "Botellas",
@@ -529,7 +704,7 @@
     "image": "assets/images/products/six_pack_corona.png"
   },
   {
-    "id": 75,
+    "id": 101,
     "nombre": "Six pack Stella Artois",
     "categoria": "Cervezas",
     "subcategoria": "Botellas",
@@ -537,7 +712,7 @@
     "image": "assets/images/products/six_pack_stella_artois.png"
   },
   {
-    "id": 76,
+    "id": 102,
     "nombre": "Six pack Heineken",
     "categoria": "Cervezas",
     "subcategoria": "Botellas",
@@ -545,7 +720,7 @@
     "image": "assets/images/products/six_pack_heineken.png"
   },
   {
-    "id": 77,
+    "id": 103,
     "nombre": "Pilsen Callao Lata 355ml",
     "categoria": "Cervezas",
     "subcategoria": "Latas",
@@ -553,7 +728,7 @@
     "image": "assets/images/products/pilsen_lata_355ml.png"
   },
   {
-    "id": 78,
+    "id": 104,
     "nombre": "Cusqueña Dorada Lata 355ml",
     "categoria": "Cervezas",
     "subcategoria": "Latas",
@@ -561,7 +736,7 @@
     "image": "assets/images/products/cusquena_dorada_lata_355ml.png"
   },
   {
-    "id": 79,
+    "id": 105,
     "nombre": "Cusqueña Trigo Lata 355ml",
     "categoria": "Cervezas",
     "subcategoria": "Latas",
@@ -569,7 +744,7 @@
     "image": "assets/images/products/cusquena_trigo_lata_355ml.png"
   },
   {
-    "id": 80,
+    "id": 106,
     "nombre": "Cristal Lata 355ml",
     "categoria": "Cervezas",
     "subcategoria": "Latas",
@@ -577,7 +752,7 @@
     "image": "assets/images/products/cristal_lata_355ml.png"
   },
   {
-    "id": 81,
+    "id": 107,
     "nombre": "Corona Extra Lata 355ml",
     "categoria": "Cervezas",
     "subcategoria": "Latas",
@@ -585,7 +760,7 @@
     "image": "assets/images/products/corona_extra_lata_355ml.png"
   },
   {
-    "id": 82,
+    "id": 108,
     "nombre": "Six Pack Pilsen Callao Latón",
     "categoria": "Cervezas",
     "subcategoria": "Latas",
@@ -593,7 +768,7 @@
     "image": "assets/images/products/six_pack_pilsen_latas.png"
   },
   {
-    "id": 83,
+    "id": 109,
     "nombre": "Six Pack Cusqueña Dorada Latas",
     "categoria": "Cervezas",
     "subcategoria": "Latas",
@@ -601,7 +776,7 @@
     "image": "assets/images/products/six_pack_cusquena_dorada.png"
   },
   {
-    "id": 84,
+    "id": 110,
     "nombre": "Pilsen Callao Latón 473ml",
     "categoria": "Cervezas",
     "subcategoria": "Latas",
@@ -609,7 +784,7 @@
     "image": "assets/images/products/pilsen_laton_473ml.png"
   },
   {
-    "id": 85,
+    "id": 111,
     "nombre": "Twelve Pilsen Callao Lata",
     "categoria": "Cervezas",
     "subcategoria": "Latas",
@@ -617,7 +792,7 @@
     "image": "assets/images/products/twelve_pilsen_lata.png"
   },
   {
-    "id": 86,
+    "id": 112,
     "nombre": "Tres cruces lata 472ml",
     "categoria": "Cervezas",
     "subcategoria": "Latas",
@@ -625,7 +800,7 @@
     "image": "assets/images/products/tres_cruces_lata_472ml.png"
   },
   {
-    "id": 87,
+    "id": 113,
     "nombre": "Flying fish 355ml Lata",
     "categoria": "Cervezas",
     "subcategoria": "Latas",
@@ -633,7 +808,7 @@
     "image": "assets/images/products/flying_fish_lata_355ml.png"
   },
   {
-    "id": 88,
+    "id": 114,
     "nombre": "Six pack tres cruces lata",
     "categoria": "Cervezas",
     "subcategoria": "Latas",
@@ -641,7 +816,7 @@
     "image": "assets/images/products/six_pack_tres_cruces.png"
   },
   {
-    "id": 89,
+    "id": 115,
     "nombre": "Golden Lata 473ml",
     "categoria": "Cervezas",
     "subcategoria": "Latas",
@@ -649,7 +824,7 @@
     "image": "assets/images/products/golden_lata_473ml.png"
   },
   {
-    "id": 90,
+    "id": 116,
     "nombre": "Six pack golden Lata",
     "categoria": "Cervezas",
     "subcategoria": "Latas",
@@ -657,38 +832,388 @@
     "image": "assets/images/products/six_pack_golden.png"
   },
   {
-    "id": 91,
+    "id": 117,
     "nombre": "Mike's Hard Lemonade 350ml",
     "categoria": "Bebidas alcohólicas preparadas",
     "precio": 8.0,
     "image": null
   },
   {
-    "id": 92,
+    "id": 118,
     "nombre": "Smirnoff Ice Original 275ml",
     "categoria": "Bebidas alcohólicas preparadas",
     "precio": 8.5,
     "image": null
   },
   {
-    "id": 93,
+    "id": 119,
     "nombre": "Four Loko Gold 473ml",
     "categoria": "Bebidas alcohólicas preparadas",
     "precio": 14.0,
     "image": null
   },
   {
-    "id": 94,
+    "id": 120,
     "nombre": "Chilcano Tabernero Clásico Lata 310ml",
     "categoria": "Bebidas alcohólicas preparadas",
     "precio": 9.0,
     "image": null
   },
   {
-    "id": 95,
+    "id": 121,
     "nombre": "Piscano Acholado Lata 310ml",
     "categoria": "Bebidas alcohólicas preparadas",
     "precio": 8.5,
     "image": null
+  },
+  {
+    "id": 122,
+    "nombre": "Johnnie Walker Red Label 750ml",
+    "categoria": "Whisky",
+    "precio": 47.0,
+    "image": null
+  },
+  {
+    "id": 123,
+    "nombre": "Johnnie Walker Black Label 750ml",
+    "categoria": "Whisky",
+    "precio": 110.0,
+    "image": null
+  },
+  {
+    "id": 124,
+    "nombre": "Chivas Regal 12 Años 750ml",
+    "categoria": "Whisky",
+    "precio": 91.0,
+    "image": null
+  },
+  {
+    "id": 125,
+    "nombre": "Ballantine's Finest 750ml",
+    "categoria": "Whisky",
+    "precio": 43.0,
+    "image": null
+  },
+  {
+    "id": 126,
+    "nombre": "Jack Daniel's Old No. 7 750ml",
+    "categoria": "Whisky",
+    "precio": 85.0,
+    "image": null
+  },
+  {
+    "id": 127,
+    "nombre": "Old Parr 12 Años 750ml",
+    "categoria": "Whisky",
+    "precio": 97.0,
+    "image": null
+  },
+  {
+    "id": 128,
+    "nombre": "Ron Cartavio 1 L + Coca-Cola 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 40.0,
+    "image": null
+  },
+  {
+    "id": 129,
+    "nombre": "Ron Cartavio 750 ml + Coca-Cola 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 35.0,
+    "image": null
+  },
+  {
+    "id": 130,
+    "nombre": "Flor de Caña 4 años + Coca-Cola 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 48.0,
+    "image": null
+  },
+  {
+    "id": 131,
+    "nombre": "Flor de Caña 5 años + Coca-Cola 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 55.0,
+    "image": null
+  },
+  {
+    "id": 132,
+    "nombre": "Ron Havana Club + Coca-Cola 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 40.0,
+    "image": null
+  },
+  {
+    "id": 133,
+    "nombre": "Bacardí + Coca-Cola 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 49.0,
+    "image": null
+  },
+  {
+    "id": 134,
+    "nombre": "Kingston + Coca-Cola 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 44.0,
+    "image": null
+  },
+  {
+    "id": 135,
+    "nombre": "Pisco Queirolo Quebranta + Evervess 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 38.0,
+    "image": null
+  },
+  {
+    "id": 136,
+    "nombre": "Pisco Queirolo Acholado + Evervess 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 38.0,
+    "image": null
+  },
+  {
+    "id": 137,
+    "nombre": "Pisco Tabernero Quebranta + Evervess 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 39.0,
+    "image": null
+  },
+  {
+    "id": 138,
+    "nombre": "Pisco Tabernero Acholado + Evervess 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 39.0,
+    "image": null
+  },
+  {
+    "id": 139,
+    "nombre": "Chivas 12 años + Evervess 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 99.0,
+    "image": null
+  },
+  {
+    "id": 140,
+    "nombre": "Old Parr 12 años + Evervess 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 105.0,
+    "image": null
+  },
+  {
+    "id": 141,
+    "nombre": "Whisky Ballantine's + Evervess 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 51.0,
+    "image": null
+  },
+  {
+    "id": 142,
+    "nombre": "Whisky Something Special + Evervess 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 52.0,
+    "image": null
+  },
+  {
+    "id": 143,
+    "nombre": "Sandy Mac + Evervess 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 29.0,
+    "image": null
+  },
+  {
+    "id": 144,
+    "nombre": "Whisky Vat 69 + Evervess 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 35.0,
+    "image": null
+  },
+  {
+    "id": 145,
+    "nombre": "Whisky Old Times + Guaraná 2 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 34.0,
+    "image": null
+  },
+  {
+    "id": 146,
+    "nombre": "Whisky Red Label + Guaraná 2 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 55.0,
+    "image": null
+  },
+  {
+    "id": 147,
+    "nombre": "Whisky Black Label + Evervess 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 118.0,
+    "image": null
+  },
+  {
+    "id": 148,
+    "nombre": "Whisky Double Black Label + Evervess 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 157.0,
+    "image": null
+  },
+  {
+    "id": 149,
+    "nombre": "Jägermeister + Frugos 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 72.0,
+    "image": null
+  },
+  {
+    "id": 150,
+    "nombre": "Vodka Russkaya + Tampico 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 34.0,
+    "image": null
+  },
+  {
+    "id": 151,
+    "nombre": "Absolut Vodka + Evervess 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 49.0,
+    "image": null
+  },
+  {
+    "id": 152,
+    "nombre": "Sky Vodka + Evervess 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 49.0,
+    "image": null
+  },
+  {
+    "id": 153,
+    "nombre": "Smirnoff Green Apple + Evervess 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 40.0,
+    "image": null
+  },
+  {
+    "id": 154,
+    "nombre": "Smirnoff Rojo + Evervess 1.5 L + hielo 1.5 kg",
+    "categoria": "Combos",
+    "precio": 39.0,
+    "image": null
+  },
+  {
+    "id": 155,
+    "nombre": "Bolsa de Hielo 1 kg",
+    "categoria": "Hielo",
+    "precio": 3.5,
+    "image": null
+  },
+  {
+    "id": 156,
+    "nombre": "Bolsa de Hielo 2 kg",
+    "categoria": "Hielo",
+    "precio": 6.0,
+    "image": null
+  },
+  {
+    "id": 157,
+    "nombre": "Bolsa de Hielo 3 kg",
+    "categoria": "Hielo",
+    "precio": 8.5,
+    "image": null
+  },
+  {
+    "id": 158,
+    "nombre": "Hielo en Cubos Gourmet 1 kg",
+    "categoria": "Hielo",
+    "precio": 5.0,
+    "image": null
+  },
+  {
+    "id": 159,
+    "nombre": "Ron Havana Club",
+    "categoria": "Ron",
+    "precio": 32.0,
+    "image": null
+  },
+  {
+    "id": 160,
+    "nombre": "Ron Bacardí",
+    "categoria": "Ron",
+    "precio": 41.0,
+    "image": null
+  },
+  {
+    "id": 161,
+    "nombre": "Ron Kingston",
+    "categoria": "Ron",
+    "precio": 36.0,
+    "image": null
+  },
+  {
+    "id": 162,
+    "nombre": "Ron Flor de Caña 5 años",
+    "categoria": "Ron",
+    "precio": 47.0,
+    "image": null
+  },
+  {
+    "id": 163,
+    "nombre": "Pisco Queirolo Quebranta",
+    "categoria": "Pisco",
+    "precio": 30.0,
+    "image": null
+  },
+  {
+    "id": 164,
+    "nombre": "Pisco Queirolo Acholado",
+    "categoria": "Pisco",
+    "precio": 30.0,
+    "image": null
+  },
+  {
+    "id": 165,
+    "nombre": "Pisco Tabernero Acholado",
+    "categoria": "Pisco",
+    "precio": 31.0,
+    "image": null
+  },
+  {
+    "id": 166,
+    "nombre": "Whisky Something Special",
+    "categoria": "Whisky",
+    "precio": 44.0,
+    "image": null
+  },
+  {
+    "id": 167,
+    "nombre": "Whisky Sandy Mac",
+    "categoria": "Whisky",
+    "precio": 21.0,
+    "image": null
+  },
+  {
+    "id": 168,
+    "nombre": "Whisky Vat 69",
+    "categoria": "Whisky",
+    "precio": 27.0,
+    "image": null
+  },
+  {
+    "id": 169,
+    "nombre": "Whisky Old Times",
+    "categoria": "Whisky",
+    "precio": 26.0,
+    "image": null
+  },
+  {
+    "id": 170,
+    "nombre": "Whisky Double Black Label",
+    "categoria": "Whisky",
+    "precio": 149.0,
+    "image": null
+  },
+  {
+    "id": 171,
+    "nombre": "Sky Vodka",
+    "categoria": "Vodkas",
+    "precio": 41.0,
+    "image": null
   }
-]
+]

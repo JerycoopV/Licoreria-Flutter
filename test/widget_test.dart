@@ -64,6 +64,9 @@ void main() {
       'Ron',
       'Cervezas',
       'Bebidas alcohólicas preparadas',
+      'Whisky',
+      'Combos',
+      'Hielo',
     ];
 
     for (final catName in expectedCategories) {
@@ -376,4 +379,64 @@ void main() {
     expect(find.text('Bebidas alcohólicas preparadas'), findsAtLeastNWidgets(1));
     expect(find.textContaining("Mike's"), findsOneWidget);
   });
+
+  testWidgets('10. Nuevas Categorías: Whisky, Combos y Hielo están disponibles con sus productos', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 2160);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await CatalogRepository().loadProducts();
+
+    // 1. Verificar existencia de las categorías
+    final whiskyCat = CatalogRepository.getCategoryById('whisky');
+    final combosCat = CatalogRepository.getCategoryById('combos');
+    final hieloCat = CatalogRepository.getCategoryById('hielo');
+
+    expect(whiskyCat, isNotNull);
+    expect(whiskyCat!.name, 'Whisky');
+    expect(combosCat, isNotNull);
+    expect(combosCat!.name, 'Combos');
+    expect(hieloCat, isNotNull);
+    expect(hieloCat!.name, 'Hielo');
+
+    // 2. Verificar productos cargados
+    final whiskyProducts = CatalogRepository().getProductsByCategory('whisky');
+    expect(whiskyProducts.isNotEmpty, isTrue);
+    expect(whiskyProducts.any((p) => p.name.contains('Johnnie Walker')), isTrue);
+
+    final combosProducts = CatalogRepository().getProductsByCategory('combos');
+    expect(combosProducts.length, 27);
+    expect(combosProducts.any((p) => p.name.contains('Ron Cartavio')), isTrue);
+    expect(combosProducts.any((p) => p.name.contains('Whisky Red Label')), isTrue);
+    expect(combosProducts.any((p) => p.name.contains('Jägermeister')), isTrue);
+
+    final hieloProducts = CatalogRepository().getProductsByCategory('hielo');
+    expect(hieloProducts.isNotEmpty, isTrue);
+    expect(hieloProducts.any((p) => p.name.contains('Bolsa de Hielo')), isTrue);
+
+    // Verificar nuevos productos incorporados
+    final ronProducts = CatalogRepository().getProductsByCategory('ron');
+    expect(ronProducts.any((p) => p.name == 'Ron Havana Club'), isTrue);
+    expect(ronProducts.any((p) => p.name == 'Ron Bacardí'), isTrue);
+
+    final piscoProducts = CatalogRepository().getProductsByCategory('pisco');
+    expect(piscoProducts.any((p) => p.name == 'Pisco Queirolo Quebranta'), isTrue);
+
+    final vodkasProducts = CatalogRepository().getProductsByCategory('vodkas');
+    expect(vodkasProducts.any((p) => p.name == 'Sky Vodka'), isTrue);
+    expect(CatalogRepository().getProductsByCategory('vodka').any((p) => p.name == 'Sky Vodka'), isTrue);
+
+    // 3. Renderizar pantalla de detalle para Whisky
+    await tester.pumpWidget(
+      MaterialApp(
+        home: CategoryDetailScreen(category: whiskyCat),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Whisky'), findsAtLeastNWidgets(1));
+    expect(find.textContaining('Johnnie Walker Red Label'), findsOneWidget);
+  });
 }
+
