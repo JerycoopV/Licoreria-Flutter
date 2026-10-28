@@ -142,4 +142,114 @@ class SalesRepository extends ChangeNotifier {
     notifyListeners();
     return await _persistSales();
   }
+
+  /// Obtiene todas las ventas pagadas con Yape
+  List<Sale> getYapeSales() {
+    return _sales.where((s) => s.metodoPago.toLowerCase() == 'yape').toList();
+  }
+
+  /// Combina una venta base de Yape con una o más ventas adicionales de Yape
+  Future<bool> combineYapeSales({
+    required Sale baseSale,
+    required List<Sale> salesToCombine,
+  }) async {
+    if (salesToCombine.isEmpty) return false;
+
+    // Verificar que todas sean ventas de Yape
+    if (baseSale.metodoPago.toLowerCase() != 'yape' ||
+        salesToCombine.any((s) => s.metodoPago.toLowerCase() != 'yape')) {
+      debugPrint('Error: Solo se pueden combinar ventas pagadas con Yape');
+      return false;
+    }
+
+    final allSales = [baseSale, ...salesToCombine];
+    final totalAmount = allSales.fold(0.0, (sum, s) => sum + s.total);
+
+    // Recolectar o construir ítems detallados de cada venta
+    final allItems = <SaleItem>[];
+    for (final s in allSales) {
+      if (s.items.isNotEmpty) {
+        allItems.addAll(s.items);
+      } else {
+        allItems.add(
+          SaleItem(
+            id: 'item_${s.id}',
+            productId: s.id.toString(),
+            productName: s.nombre,
+            unitPrice: s.precio,
+            quantity: s.cantidad,
+          ),
+        );
+      }
+    }
+
+    // Construir nombre representativo de la combinación
+    String combinedName;
+    if (allSales.length == 2) {
+      combinedName = '${allSales[0].nombre} + ${allSales[1].nombre}';
+    } else {
+      combinedName = '${allSales[0].nombre} + ${allSales.length - 1} productos más';
+    }
+
+    // Categoría: si todas tienen la misma categoría usarla, sino 'Varios (Yape)'
+    final categories = allSales.map((s) => s.categoria).toSet();
+    final combinedCategory = categories.length == 1
+        ? categories.first
+        : 'Varios (Yape)';
+
+    // Fecha más reciente entre las ventas a combinar
+    final latestDate = allSales
+        .map((s) => s.createdAt)
+        .reduce((a, b) => a.isAfter(b) ? a : b);
+
+    final combinedSale = Sale(
+      id: 'yape_comb_${DateTime.now().millisecondsSinceEpoch}',
+      nombre: combinedName,
+      categoria: combinedCategory,
+      cantidad: 1,
+      precio: totalAmount,
+      metodoPago: 'Yape',
+      createdAt: latestDate,
+      items: allItems,
+      isCombined: true,
+      originalSalesData: allSales.map((s) => s.toMap()).toList(),
+      note: 'Venta combinada Yape (${allSales.length} productos)',
+    );
+
+    // Encontrar índice de la venta base para reemplazarla en la misma posición relativa
+    final baseIndex =
+        _sales.indexWhere((s) => s.id.toString() == baseSale.id.toString());
+
+    // Eliminar las ventas originales que ahora forman parte del grupo
+    final idsToRemove = allSales.map((s) => s.id.toString()).toSet();
+    _sales.removeWhere((s) => idsToRemove.contains(s.id.toString()));
+
+    // Insertar la venta combinada en la posición de la venta base
+    final insertIndex =
+        (baseIndex >= 0 && baseIndex <= _sales.length) ? baseIndex : 0;
+    _sales.insert(insertIndex, combinedSale);
+
+    notifyListeners();
+    return await _persistSales();
+  }
+
+  /// Deshace una combinación restaurando las ventas originales
+  Future<bool> separateCombinedSale(Sale combinedSale) async {
+    if (!combinedSale.isCombined ||
+        combinedSale.originalSalesData == null ||
+        combinedSale.originalSalesData!.isEmpty) {
+      return false;
+    }
+
+    final index = _sales
+        .indexWhere((s) => s.id.toString() == combinedSale.id.toString());
+    if (index < 0) return false;
+
+    final originals = combinedSale.originalSales;
+    _sales.removeAt(index);
+    _sales.insertAll(index, originals);
+
+    notifyListeners();
+    return await _persistSales();
+  }
 }

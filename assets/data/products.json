@@ -161,6 +161,41 @@
     "image": null
   },
   {
+    "id": 179,
+    "nombre": "Guaraná 300ml",
+    "categoria": "Bebidas",
+    "precio": 1.5,
+    "image": null
+  },
+  {
+    "id": 180,
+    "nombre": "Guaraná 450ml",
+    "categoria": "Bebidas",
+    "precio": 2.5,
+    "image": null
+  },
+  {
+    "id": 181,
+    "nombre": "Guaraná 2L",
+    "categoria": "Bebidas",
+    "precio": 6.5,
+    "image": null
+  },
+  {
+    "id": 182,
+    "nombre": "Pepsi personal 700ml",
+    "categoria": "Bebidas",
+    "precio": 3.0,
+    "image": null
+  },
+  {
+    "id": 183,
+    "nombre": "Pepsi 300ml",
+    "categoria": "Bebidas",
+    "precio": 1.2,
+    "image": null
+  },
+  {
     "id": 24,
     "nombre": "Club Soda 24g",
     "categoria": "Galletas",
@@ -358,31 +393,17 @@
   },
   {
     "id": 52,
-    "nombre": "Halls Negro Extra Fuerte",
+    "nombre": "Barra de Halls",
     "categoria": "Chicles y mentas",
-    "precio": 1.5,
-    "image": "assets/images/products/halls_negro.png"
-  },
-  {
-    "id": 53,
-    "nombre": "Halls Cereza",
-    "categoria": "Chicles y mentas",
-    "precio": 1.5,
-    "image": "assets/images/products/halls_cereza.png"
+    "precio": 2.0,
+    "image": null
   },
   {
     "id": 54,
-    "nombre": "Trident Menta",
+    "nombre": "Trident paquete 14 chicles 25,2g",
     "categoria": "Chicles y mentas",
-    "precio": 1.5,
-    "image": "assets/images/products/trident_menta.png"
-  },
-  {
-    "id": 55,
-    "nombre": "Trident Hierbabuena",
-    "categoria": "Chicles y mentas",
-    "precio": 1.5,
-    "image": "assets/images/products/trident_hierbabuena.png"
+    "precio": 2.0,
+    "image": null
   },
   {
     "id": 56,
@@ -390,6 +411,41 @@
     "categoria": "Chicles y mentas",
     "precio": 1.0,
     "image": "assets/images/products/clorets_clasico.png"
+  },
+  {
+    "id": 174,
+    "nombre": "Chicles unidad",
+    "categoria": "Chicles y mentas",
+    "precio": 0.3,
+    "image": null
+  },
+  {
+    "id": 175,
+    "nombre": "3 Chicles",
+    "categoria": "Chicles y mentas",
+    "precio": 0.5,
+    "image": null
+  },
+  {
+    "id": 176,
+    "nombre": "Chupetín",
+    "categoria": "Chicles y mentas",
+    "precio": 0.4,
+    "image": null
+  },
+  {
+    "id": 177,
+    "nombre": "Halls unidad",
+    "categoria": "Chicles y mentas",
+    "precio": 0.3,
+    "image": null
+  },
+  {
+    "id": 178,
+    "nombre": "3 Halls",
+    "categoria": "Chicles y mentas",
+    "precio": 0.5,
+    "image": null
   },
   {
     "id": 57,
@@ -507,14 +563,14 @@
     "id": 73,
     "nombre": "Tabernero Borgoña Selección Especial 750ml",
     "categoria": "Vino",
-    "precio": 26.0,
+    "precio": 20.0,
     "image": "assets/images/products/tabernero_borgona_750ml.png"
   },
   {
     "id": 74,
     "nombre": "Tacama Selección Especial Tinto 750ml",
     "categoria": "Vino",
-    "precio": 36.0,
+    "precio": 23.0,
     "image": "assets/images/products/tacama_seleccion_especial_750ml.png"
   },
   {
@@ -1214,6 +1270,20 @@
     "nombre": "Sky Vodka",
     "categoria": "Vodkas",
     "precio": 41.0,
+    "image": null
+  },
+  {
+    "id": 172,
+    "nombre": "Vino Tabernero Semi Seco 750ml",
+    "categoria": "Vino",
+    "precio": 18.0,
+    "image": null
+  },
+  {
+    "id": 173,
+    "nombre": "Vino Santiago Queirolo 750ml",
+    "categoria": "Vino",
+    "precio": 19.0,
     "image": null
   }
 ]

@@ -296,8 +296,8 @@ void main() {
     final bebidasCategory = CatalogRepository.getCategoryById('bebidas')!;
     final bebidasProducts = CatalogRepository().getProductsByCategory('bebidas');
 
-    // 1. Verificar conteo exacto de 23 productos
-    expect(bebidasProducts.length, 23);
+    // 1. Verificar conteo de 28 productos en Bebidas
+    expect(bebidasProducts.length, 28);
 
     final expectedProducts = [
       {'nombre': 'Inka Cola personal 500ml', 'precio': 3.00},
@@ -336,6 +336,18 @@ void main() {
       expect(p.categoria, 'Bebidas');
     }
 
+    // Verificar nuevas gaseosas (Guaraná y Pepsi)
+    expect(bebidasProducts.any((p) => p.nombre == 'Guaraná 300ml' && p.precio == 1.5), isTrue);
+    expect(bebidasProducts.any((p) => p.nombre == 'Guaraná 450ml' && p.precio == 2.5), isTrue);
+    expect(bebidasProducts.any((p) => p.nombre == 'Guaraná 2L' && p.precio == 6.5), isTrue);
+    expect(bebidasProducts.any((p) => p.nombre == 'Pepsi personal 700ml' && p.precio == 3.0), isTrue);
+    expect(bebidasProducts.any((p) => p.nombre == 'Pepsi 300ml' && p.precio == 1.2), isTrue);
+
+    // Verificar alias "gaseosa" y búsqueda fonética "pepso"
+    expect(CatalogRepository.getCategoryById('gaseosa'), isNotNull);
+    expect(CatalogRepository.getCategoryById('gaseosa')!.id, 'bebidas');
+    expect(CatalogRepository().searchProducts('pepso').any((p) => p.nombre == 'Pepsi 300ml'), isTrue);
+
     // 3. Renderizar CategoryDetailScreen para Bebidas
     await tester.pumpWidget(
       MaterialApp(
@@ -346,7 +358,7 @@ void main() {
 
     // 4. Verificar cabecera y contador en pantalla
     expect(find.text('Bebidas'), findsAtLeastNWidgets(1));
-    expect(find.text('23 productos disponibles'), findsOneWidget);
+    expect(find.text('28 productos disponibles'), findsOneWidget);
 
     // 5. Verificar productos visibles y formato de precio S/.
     expect(find.text('Inka Cola personal 500ml'), findsOneWidget);
@@ -427,6 +439,31 @@ void main() {
     expect(vodkasProducts.any((p) => p.name == 'Sky Vodka'), isTrue);
     expect(CatalogRepository().getProductsByCategory('vodka').any((p) => p.name == 'Sky Vodka'), isTrue);
 
+    // Verificar vinos actualizados y nuevos
+    final vinoProducts = CatalogRepository().getProductsByCategory('vino');
+    expect(vinoProducts.firstWhere((p) => p.name.contains('Tacama')).price, 23.0);
+    expect(vinoProducts.firstWhere((p) => p.name.contains('Tabernero Borgoña')).price, 20.0);
+    expect(vinoProducts.any((p) => p.name == 'Vino Tabernero Semi Seco 750ml' && p.price == 18.0), isTrue);
+    expect(vinoProducts.any((p) => p.name == 'Vino Santiago Queirolo 750ml' && p.price == 19.0), isTrue);
+
+    // Verificar chicles y mentas actualizados y nuevos
+    final chiclesProducts = CatalogRepository().getProductsByCategory('chicles_mentas');
+    expect(chiclesProducts.any((p) => p.name == 'Barra de Halls' && p.price == 2.0), isTrue);
+    expect(chiclesProducts.any((p) => p.name == 'Trident paquete 14 chicles 25,2g' && p.price == 2.0), isTrue);
+    expect(chiclesProducts.any((p) => p.name == 'Chicles unidad' && p.price == 0.3), isTrue);
+    expect(chiclesProducts.any((p) => p.name == '3 Chicles' && p.price == 0.5), isTrue);
+    expect(chiclesProducts.any((p) => p.name == 'Chupetín' && p.price == 0.4), isTrue);
+    expect(chiclesProducts.any((p) => p.name == 'Halls unidad' && p.price == 0.3), isTrue);
+    expect(chiclesProducts.any((p) => p.name == '3 Halls' && p.price == 0.5), isTrue);
+
+    // Solo debe haber un Trident y una Barra de Halls
+    expect(chiclesProducts.where((p) => p.name.toLowerCase().contains('trident')).length, 1);
+    expect(chiclesProducts.where((p) => p.name.toLowerCase().contains('barra de halls')).length, 1);
+
+    // Búsqueda con soporte para aliases "hals" y "chiles"
+    expect(CatalogRepository().searchProducts('hals').any((p) => p.name == 'Barra de Halls'), isTrue);
+    expect(CatalogRepository().searchProducts('chiles').any((p) => p.name == 'Chicles unidad'), isTrue);
+
     // 3. Renderizar pantalla de detalle para Whisky
     await tester.pumpWidget(
       MaterialApp(
@@ -438,5 +475,147 @@ void main() {
     expect(find.text('Whisky'), findsAtLeastNWidgets(1));
     expect(find.textContaining('Johnnie Walker Red Label'), findsOneWidget);
   });
+
+  testWidgets('11. Función exclusiva Yape: Combinar ventas de Yape y separar ventas combinadas', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 2160);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await SalesRepository().clearAll();
+
+    // 1. Registrar 2 ventas de Yape y 1 de Efectivo (exactamente como la captura del usuario)
+    final saleYape1 = Sale(
+      id: 'yape_1',
+      nombre: 'Vodka Absolut Original 750ml',
+      categoria: 'Vodkas',
+      cantidad: 1,
+      precio: 41.00,
+      metodoPago: 'Yape',
+      createdAt: DateTime.now(),
+    );
+
+    final saleYape2 = Sale(
+      id: 'yape_2',
+      nombre: 'Pisco Portón Mosto Verde 750ml',
+      categoria: 'Pisco',
+      cantidad: 1,
+      precio: 89.00,
+      metodoPago: 'Yape',
+      createdAt: DateTime.now().subtract(const Duration(hours: 2)),
+    );
+
+    final saleEfectivo = Sale(
+      id: 'efectivo_1',
+      nombre: 'Six Pack Pilsen Callao Latas',
+      categoria: 'Cervezas',
+      cantidad: 2,
+      precio: 32.00,
+      metodoPago: 'Efectivo',
+      createdAt: DateTime.now().subtract(const Duration(hours: 5)),
+    );
+
+    await SalesRepository().recordSale(saleEfectivo);
+    await SalesRepository().recordSale(saleYape2);
+    await SalesRepository().recordSale(saleYape1);
+
+    expect(SalesRepository().sales.length, 3);
+    expect(SalesRepository().totalSalesAmount, 194.00);
+    expect(SalesRepository().totalCashAmount, 64.00);
+    expect(SalesRepository().totalYapeAmount, 130.00);
+
+    // 2. Renderizar HomeScreen y verificar interfaz
+    await tester.pumpWidget(const LicoreriaApp());
+    await tester.pumpAndSettle();
+
+    expect(find.text('S/. 194.00'), findsOneWidget);
+    expect(find.text('S/. 130.00'), findsOneWidget);
+    expect(find.text('3 ventas'), findsOneWidget);
+
+    // 3. Ejecutar combinación de las 2 ventas de Yape
+    final success = await SalesRepository().combineYapeSales(
+      baseSale: saleYape1,
+      salesToCombine: [saleYape2],
+    );
+    expect(success, isTrue);
+
+    await tester.pumpAndSettle();
+
+    // 4. Verificar que se unificaron en 1 sola venta de Yape
+    expect(SalesRepository().sales.length, 2); // 1 Efectivo + 1 Yape unificado
+    expect(SalesRepository().totalYapeAmount, 130.00);
+    expect(SalesRepository().totalSalesAmount, 194.00);
+    expect(find.text('2 ventas'), findsOneWidget);
+    expect(find.text('COMBINADO'), findsOneWidget);
+    expect(find.textContaining('Vodka Absolut Original 750ml + Pisco Portón Mosto Verde 750ml'), findsOneWidget);
+
+    // 5. Verificar que se pueden separar las ventas combinadas
+    final combinedSale = SalesRepository().sales.firstWhere((s) => s.isCombined);
+    expect(combinedSale.originalSales.length, 2);
+
+    final unmerged = await SalesRepository().separateCombinedSale(combinedSale);
+    expect(unmerged, isTrue);
+
+    await tester.pumpAndSettle();
+
+    expect(SalesRepository().sales.length, 3);
+    expect(find.text('3 ventas'), findsOneWidget);
+    expect(find.text('COMBINADO'), findsNothing);
+  });
+
+  testWidgets(
+      '12. Pantallas pequeñas (320px de ancho): Botón de nueva venta e historial renderizan sin desbordamientos',
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(320 * 2.0, 568 * 2.0);
+    tester.view.devicePixelRatio = 2.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await SalesRepository().clearAll();
+
+    // Registrar ventas con nombres largos
+    await SalesRepository().recordSale(
+      Sale(
+        id: 'test_small_1',
+        nombre: 'Pisco Portón Mosto Verde 750ml',
+        categoria: 'Pisco',
+        cantidad: 1,
+        precio: 89.00,
+        metodoPago: 'Yape',
+        createdAt: DateTime.now(),
+      ),
+    );
+    await SalesRepository().recordSale(
+      Sale(
+        id: 'test_small_2',
+        nombre: 'Six Pack Pilsen Callao Latas',
+        categoria: 'Cervezas',
+        cantidad: 2,
+        precio: 32.00,
+        metodoPago: 'Efectivo',
+        createdAt: DateTime.now().subtract(const Duration(hours: 1)),
+      ),
+    );
+
+    await tester.pumpWidget(const LicoreriaApp());
+    await tester.pumpAndSettle();
+
+    // Verificar que el botón de nueva venta y su texto existen y no causan overflow
+    expect(find.text('NUEVA VENTA'), findsOneWidget);
+    expect(find.text('Toca para abrir categorías y registrar'), findsOneWidget);
+
+    // Desplazar para verificar que los elementos del historial se renderizan correctamente
+    await tester.scrollUntilVisible(
+      find.textContaining('Pisco Portón'),
+      100,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Pisco Portón'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }
+
 

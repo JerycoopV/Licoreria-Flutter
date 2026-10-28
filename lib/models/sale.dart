@@ -67,6 +67,8 @@ class Sale {
   final DateTime createdAt;
   final String? note;
   final List<SaleItem> items;
+  final bool isCombined;
+  final List<Map<String, dynamic>>? originalSalesData;
 
   Sale({
     required this.id,
@@ -82,6 +84,8 @@ class Sale {
     DateTime? createdAt,
     this.note,
     this.items = const [],
+    this.isCombined = false,
+    this.originalSalesData,
   })  : nombre = nombre ?? (note ?? 'Venta'),
         categoria = categoria ?? 'General',
         cantidad = cantidad ?? 1,
@@ -103,6 +107,12 @@ class Sale {
       ? PaymentMethod.yape
       : PaymentMethod.efectivo;
 
+  /// Retorna las ventas originales si esta venta fue combinada
+  List<Sale> get originalSales {
+    if (originalSalesData == null || originalSalesData!.isEmpty) return [];
+    return originalSalesData!.map((m) => Sale.fromMap(m)).toList();
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -113,6 +123,10 @@ class Sale {
       'metodo_pago': metodoPago,
       'created_at': createdAt.toIso8601String(),
       if (note != null) 'note': note,
+      if (items.isNotEmpty) 'items': items.map((i) => i.toMap()).toList(),
+      if (isCombined) 'is_combined': true,
+      if (originalSalesData != null && originalSalesData!.isNotEmpty)
+        'original_sales_data': originalSalesData,
     };
   }
 
@@ -128,6 +142,21 @@ class Sale {
             ? (map['total_amount'] as num).toDouble() / (qty > 0 ? qty : 1)
             : 0.0);
 
+    List<SaleItem> parsedItems = items;
+    if (map['items'] is List && (map['items'] as List).isNotEmpty) {
+      parsedItems = (map['items'] as List)
+          .whereType<Map<String, dynamic>>()
+          .map((itemMap) => SaleItem.fromMap(itemMap))
+          .toList();
+    }
+
+    final isCombined = map['is_combined'] == true;
+    final rawOriginal = map['original_sales_data'];
+    List<Map<String, dynamic>>? originalData;
+    if (rawOriginal is List && rawOriginal.isNotEmpty) {
+      originalData = rawOriginal.whereType<Map<String, dynamic>>().toList();
+    }
+
     return Sale(
       id: map['id'],
       nombre: (map['nombre'] ?? map['product_name'] ?? map['note'] ?? 'Venta')
@@ -141,7 +170,9 @@ class Sale {
           ? DateTime.tryParse(map['created_at'] as String) ?? DateTime.now()
           : DateTime.now(),
       note: map['note'] as String?,
-      items: items,
+      items: parsedItems,
+      isCombined: isCombined,
+      originalSalesData: originalData,
     );
   }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/responsive_layout.dart';
+import '../../models/sale.dart';
 import '../../repositories/sales_repository.dart';
 import '../categories/categories_screen.dart';
+import 'widgets/combine_yape_modal.dart';
 import 'widgets/new_sale_button.dart';
 import 'widgets/quick_metrics_bar.dart';
 import 'widgets/sale_history_card.dart';
@@ -17,13 +19,16 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.liquor_rounded, color: AppColors.primary, size: 22),
-            SizedBox(width: 8),
-            Text('LICORERÍA POS'),
-          ],
+        title: const FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.liquor_rounded, color: AppColors.primary, size: 22),
+              SizedBox(width: 8),
+              Text('LICORERÍA POS'),
+            ],
+          ),
         ),
         actions: [
           IconButton(
@@ -77,17 +82,25 @@ class HomeScreen extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'HISTORIAL DE VENTAS',
-                          style: TextStyle(
-                            color: AppColors.textMuted,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.8,
+                        const Expanded(
+                          child: Text(
+                            'HISTORIAL DE VENTAS',
+                            style: TextStyle(
+                              color: AppColors.textMuted,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.8,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         if (sales.isNotEmpty)
                           TextButton(
+                            style: TextButton.styleFrom(
+                              visualDensity: VisualDensity.compact,
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                            ),
                             onPressed: () => _confirmClearHistory(context),
                             child: const Text(
                               'Limpiar',
@@ -153,6 +166,9 @@ class HomeScreen extends StatelessWidget {
                           return SaleHistoryCard(
                             sale: sale,
                             onDelete: () => salesRepo.removeSale(sale.id),
+                            onCombine: sale.metodoPago.toLowerCase() == 'yape'
+                                ? () => _handleYapeAction(context, sale)
+                                : null,
                           );
                         },
                         childCount: sales.length,
@@ -167,6 +183,72 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _handleYapeAction(BuildContext context, Sale sale) async {
+    if (sale.isCombined) {
+      final result = await CombinedSaleDetailsModal.show(context, sale: sale);
+      if (result == true && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: AppColors.surfaceElevated,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: const BorderSide(color: AppColors.cardBorder),
+            ),
+            content: const Row(
+              children: [
+                Icon(Icons.call_split_rounded,
+                    color: AppColors.primary, size: 20),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'Se separaron las ventas en registros individuales de Yape',
+                    style: TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    } else {
+      final result = await CombineYapeModal.show(context, baseSale: sale);
+      if (result == true && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: AppColors.surfaceElevated,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: const BorderSide(color: AppColors.cardBorder),
+            ),
+            content: const Row(
+              children: [
+                Icon(Icons.check_circle_rounded,
+                    color: AppColors.yape, size: 20),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'Ventas de Yape combinadas con éxito en una sola transferencia',
+                    style: TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    }
   }
 
   void _showInfoDialog(BuildContext context) {

@@ -140,7 +140,13 @@ class CatalogRepository extends ChangeNotifier {
             (clean == 'hielos' && cat.id == 'hielo') ||
             (clean == 'vodka' && cat.id == 'vodkas') ||
             (clean == 'rones' && cat.id == 'ron') ||
-            (clean == 'vinos' && cat.id == 'vino');
+            (clean == 'vinos' && cat.id == 'vino') ||
+            (clean == 'chicle' && cat.id == 'chicles_mentas') ||
+            (clean == 'chicles' && cat.id == 'chicles_mentas') ||
+            (clean == 'menta' && cat.id == 'chicles_mentas') ||
+            (clean == 'mentas' && cat.id == 'chicles_mentas') ||
+            (clean == 'gaseosa' && cat.id == 'bebidas') ||
+            (clean == 'gaseosas' && cat.id == 'bebidas');
       });
     } catch (_) {
       return null;
@@ -298,7 +304,19 @@ class CatalogRepository extends ChangeNotifier {
           return false;
         }
       }
-      return p.nombre.toLowerCase().contains(cleanQuery);
+      final pNorm = _normalize(p.nombre);
+      final normQuery = _normalize(cleanQuery);
+      final halsQuery = normQuery.replaceAll('hals', 'halls');
+      final pepsoQuery = normQuery.replaceAll('pepso', 'pepsi');
+      final chilesQuery = normQuery
+          .replaceAll('chiles', 'chicles')
+          .replaceAll('chile', 'chicle');
+
+      return p.nombre.toLowerCase().contains(cleanQuery) ||
+          pNorm.contains(normQuery) ||
+          pNorm.contains(halsQuery) ||
+          pNorm.contains(pepsoQuery) ||
+          pNorm.contains(chilesQuery);
     }).toList();
   }
 
