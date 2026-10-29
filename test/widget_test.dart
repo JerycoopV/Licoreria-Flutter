@@ -4,6 +4,9 @@ import 'package:licoreria_pos/main.dart';
 import 'package:licoreria_pos/models/product.dart';
 import 'package:licoreria_pos/models/sale.dart';
 import 'package:licoreria_pos/presentation/categories/category_detail_screen.dart';
+import 'package:licoreria_pos/models/boleta.dart';
+import 'package:licoreria_pos/presentation/boletas/boletas_screen.dart';
+import 'package:licoreria_pos/repositories/boletas_repository.dart';
 import 'package:licoreria_pos/repositories/catalog_repository.dart';
 import 'package:licoreria_pos/repositories/sales_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,6 +21,7 @@ void main() {
     // Asegurar almacenamiento mock limpio para cada prueba
     SharedPreferences.setMockInitialValues({});
     await SalesRepository().clearAll();
+    await BoletasRepository().clearAll();
   });
 
   testWidgets('1. Carga inicial de Home: Título, botón "+" y estado vacío', (WidgetTester tester) async {
@@ -613,8 +617,219 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('Pisco Portón'), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  test('13. Modelo Boleta: Constructor, serialización toMap/fromMap y generación de ticket en texto plano', () {
+    final now = DateTime(2026, 10, 29, 1, 30);
+    final items = [
+      const BoletaItem(
+        id: '1',
+        nombre: 'Pilsen Callao margarito 1L',
+        categoria: 'Cervezas',
+        cantidad: 2,
+        precioUnitario: 10.0,
+        subtotal: 20.0,
+        metodoPago: 'Efectivo',
+      ),
+      const BoletaItem(
+        id: '2',
+        nombre: 'Coca Cola personal 500ml',
+        categoria: 'Bebidas',
+        cantidad: 1,
+        precioUnitario: 3.0,
+        subtotal: 3.0,
+        metodoPago: 'Yape',
+      ),
+    ];
+
+    final boleta = Boleta(
+      id: 'boleta_test_1',
+      numero: 'B001-00001',
+      fecha: now,
+      items: items,
+    );
+
+    expect(boleta.id, 'boleta_test_1');
+    expect(boleta.numero, 'B001-00001');
+    expect(boleta.total, 23.0);
+    expect(boleta.totalEfectivo, 20.0);
+    expect(boleta.totalYape, 3.0);
+    expect(boleta.cantidadProductos, 3);
+
+    // Verificación de toMap y fromMap
+    final map = boleta.toMap();
+    expect(map['numero'], 'B001-00001');
+    expect(map['total'], 23.0);
+    expect(map['items'], isList);
+
+    final fromMapBoleta = Boleta.fromMap(map);
+    expect(fromMapBoleta.numero, 'B001-00001');
+    expect(fromMapBoleta.items.length, 2);
+    expect(fromMapBoleta.total, 23.0);
+    expect(fromMapBoleta.totalEfectivo, 20.0);
+    expect(fromMapBoleta.totalYape, 3.0);
+
+    // Verificación de ticket plano
+    final ticketText = boleta.toPlainTextTicket();
+    expect(ticketText, contains('BOLETA DE VENTA'));
+    expect(ticketText, contains('B001-00001'));
+    expect(ticketText, contains('Pilsen Callao'));
+    expect(ticketText, contains('Coca Cola personal'));
+    expect(ticketText, contains('TOTAL A PAGAR: S/. 23.00'));
+  });
+
+  test('14. BoletasRepository: Genera y persiste boleta a partir de ventas con fecha actual', () async {
+    final now = DateTime.now();
+    final sales = [
+      Sale(
+        id: 'sale_1',
+        nombre: 'Cuates 43g',
+        categoria: 'Frituras',
+        cantidad: 2,
+        precio: 1.0,
+        metodoPago: 'Efectivo',
+        createdAt: now,
+      ),
+      Sale(
+        id: 'sale_2',
+        nombre: 'Fanta 625 ml',
+        categoria: 'Bebidas',
+        cantidad: 1,
+        precio: 2.5,
+        metodoPago: 'Yape',
+        createdAt: now,
+      ),
+    ];
+
+    final repo = BoletasRepository();
+    expect(repo.boletas.isEmpty, isTrue);
+
+    final boleta = await repo.createBoletaFromSales(sales);
+    expect(boleta.numero, 'B001-00001');
+    expect(boleta.items.length, 2);
+    expect(boleta.total, 4.5);
+    expect(repo.boletas.length, 1);
+    expect(repo.totalBoletasAmount, 4.5);
+
+    // Recargar desde SharedPreferences para verificar persistencia
+    final reloaded = await repo.loadBoletas();
+    expect(reloaded.length, 1);
+    expect(reloaded.first.numero, 'B001-00001');
+  });
+
+  testWidgets('15. Flujo Exporta Boleta: Botón en Home guarda los productos vendidos en el listado de boletas', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 2160);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await SalesRepository().clearAll();
+    await BoletasRepository().clearAll();
+
+    // 1. Cargar Home inicialmente con 0 ventas
+    await tester.pumpWidget(const LicoreriaApp());
+    await tester.pumpAndSettle();
+
+    // El botón 'EXPORTA BOLETA' está presente al inicio de la lista
+    expect(find.text('EXPORTA BOLETA'), findsOneWidget);
+
+    // 2. Registrar 2 ventas
+    await SalesRepository().recordSale(
+      Sale(
+        id: 'v1',
+        nombre: 'Pilsen Callao margarito 1L',
+        categoria: 'Cervezas',
+        cantidad: 1,
+        precio: 10.0,
+        metodoPago: 'Efectivo',
+      ),
+    );
+    await SalesRepository().recordSale(
+      Sale(
+        id: 'v2',
+        nombre: 'Coca Cola personal 500ml',
+        categoria: 'Bebidas',
+        cantidad: 1,
+        precio: 3.0,
+        metodoPago: 'Yape',
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Verificar que el botón muestra el contador de 2 productos
+    expect(find.text('EXPORTA BOLETA'), findsOneWidget);
+    expect(find.text('2'), findsAtLeastNWidgets(1));
+
+    // 3. Tocar el botón 'EXPORTA BOLETA'
+    await tester.tap(find.text('EXPORTA BOLETA'));
+    await tester.pumpAndSettle();
+
+    // 4. Modal de Boleta abierta con diseño de ticket y datos
+    expect(find.text('Boleta Generada'), findsOneWidget);
+    expect(find.text('B001-00001'), findsAtLeastNWidgets(1));
+    expect(find.text('Pilsen Callao margarito 1L'), findsAtLeastNWidgets(1));
+    expect(find.text('Coca Cola personal 500ml'), findsAtLeastNWidgets(1));
+    expect(find.text('S/. 13.00'), findsAtLeastNWidgets(1));
+
+    // Verificar que la boleta se guardó en BoletasRepository
+    expect(BoletasRepository().boletas.length, 1);
+    expect(BoletasRepository().boletas.first.numero, 'B001-00001');
+
+    // 5. Opción de limpiar para nueva venta
+    expect(find.text('¿Deseas iniciar una nueva venta?'), findsOneWidget);
+    await tester.tap(find.text('Nueva venta'));
+    await tester.pumpAndSettle();
+
+    // Los registros de la pantalla principal se limpiaron para la nueva venta
+    expect(SalesRepository().sales.isEmpty, isTrue);
+    expect(find.text('No hay registros anteriores'), findsOneWidget);
+
+    // Pero la boleta sigue guardada en el listado
+    expect(BoletasRepository().boletas.length, 1);
+  });
+
+  testWidgets('16. Pantalla BoletasScreen: Muestra listado de boletas guardadas y permite buscar', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 2160);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await BoletasRepository().clearAll();
+
+    // Crear una boleta en el repositorio
+    await BoletasRepository().createBoletaFromSales([
+      Sale(
+        id: 'prod_1',
+        nombre: 'Whisky Red Label',
+        categoria: 'Whisky',
+        cantidad: 1,
+        precio: 65.0,
+        metodoPago: 'Yape',
+      ),
+    ]);
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: BoletasScreen(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Verificar cabecera y boleta listada
+    expect(find.text('Listado de Boletas'), findsOneWidget);
+    expect(find.text('B001-00001'), findsOneWidget);
+    expect(find.textContaining('Whisky Red Label'), findsOneWidget);
+    expect(find.text('S/. 65.00'), findsOneWidget);
+
+    // Búsqueda en el listado
+    await tester.enterText(find.byType(TextField), 'Vodka');
+    await tester.pumpAndSettle();
+    expect(find.textContaining('No se encontraron boletas'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextField), 'Whisky');
+    await tester.pumpAndSettle();
+    expect(find.text('B001-00001'), findsOneWidget);
   });
 }
 

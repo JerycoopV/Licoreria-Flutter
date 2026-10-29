@@ -5,9 +5,11 @@ import '../../models/sale.dart';
 import '../../repositories/sales_repository.dart';
 import '../categories/categories_screen.dart';
 import 'widgets/combine_yape_modal.dart';
+import 'widgets/export_boleta_button.dart';
 import 'widgets/new_sale_button.dart';
 import 'widgets/quick_metrics_bar.dart';
 import 'widgets/sale_history_card.dart';
+import '../boletas/boletas_screen.dart';
 
 /// Pantalla Principal: Sencilla, limpia y enfocada en la rapidez de registro.
 class HomeScreen extends StatelessWidget {
@@ -31,6 +33,18 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.receipt_long_rounded),
+            tooltip: 'Listado de boletas',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const BoletasScreen(),
+                ),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.info_outline_rounded),
             tooltip: 'Acerca del sistema',
@@ -116,7 +130,12 @@ class HomeScreen extends StatelessWidget {
 
                   const SliverToBoxAdapter(child: SizedBox(height: 12)),
 
-                  // 4. LISTA DE REGISTROS DEBAJO DEL BOTÓN "+"
+                  // Botón Exporta Boleta al inicio de la lista
+                  SliverToBoxAdapter(
+                    child: ExportBoletaButton(sales: sales),
+                  ),
+
+                  // 4. LISTA DE REGISTROS DEBAJO DEL BOTÓN
                   if (sales.isEmpty)
                     SliverToBoxAdapter(
                       child: Container(
