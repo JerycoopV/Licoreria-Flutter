@@ -7,6 +7,7 @@ import 'package:licoreria_pos/presentation/categories/category_detail_screen.dar
 import 'package:licoreria_pos/core/services/boleta_pdf_service.dart';
 import 'package:licoreria_pos/models/boleta.dart';
 import 'package:licoreria_pos/presentation/boletas/boletas_screen.dart';
+import 'package:licoreria_pos/presentation/categories/categories_screen.dart';
 import 'package:licoreria_pos/repositories/boletas_repository.dart';
 import 'package:licoreria_pos/repositories/catalog_repository.dart';
 import 'package:licoreria_pos/repositories/sales_repository.dart';
@@ -855,6 +856,57 @@ void main() {
     // Un archivo PDF siempre inicia con la firma de encabezado "%PDF"
     final header = String.fromCharCodes(pdfBytes.take(4));
     expect(header, '%PDF');
+  });
+
+  testWidgets('18. Buscador Global en CategoriesScreen: Permite buscar productos globalmente (ej. "Ink") y abrir venta rápida', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 2160);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await CatalogRepository().loadProducts();
+    await SalesRepository().clearAll();
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: CategoriesScreen(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // 1. Verificar estado inicial: Menú de categorías y buscador global presente
+    expect(find.text('Menú de Categorías'), findsOneWidget);
+    expect(find.text('Selecciona una Categoría'), findsOneWidget);
+    expect(find.byType(TextField), findsOneWidget);
+    expect(find.text('Bebidas'), findsOneWidget);
+    expect(find.text('Cervezas'), findsOneWidget);
+
+    // 2. Escribir "Ink" en el buscador global
+    await tester.enterText(find.byType(TextField), 'Ink');
+    await tester.pumpAndSettle();
+
+    // 3. Verificar que cambia a resultados de búsqueda global
+    expect(find.text('Resultados de Búsqueda'), findsOneWidget);
+    expect(find.textContaining('Inka Cola personal 500ml'), findsOneWidget);
+    expect(find.textContaining('Inka Cola 1L'), findsOneWidget);
+
+    // 4. Tocar el producto "Inka Cola personal 500ml" para abrir el modal de venta rápida
+    await tester.tap(find.textContaining('Inka Cola personal 500ml'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Registrar Venta'), findsOneWidget);
+    expect(find.text('CANTIDAD'), findsOneWidget);
+    expect(find.text('TOTAL A COBRAR'), findsOneWidget);
+
+    // 5. Presionar Registrar Venta
+    final registrarBtn = find.textContaining('Registrar venta');
+    expect(registrarBtn, findsOneWidget);
+    await tester.tap(registrarBtn);
+    await tester.pumpAndSettle();
+
+    // 6. Verificar que la venta fue registrada
+    expect(SalesRepository().sales.length, 1);
+    expect(SalesRepository().sales.first.nombre, 'Inka Cola personal 500ml');
   });
 }
 
