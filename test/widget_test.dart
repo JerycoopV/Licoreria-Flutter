@@ -4,6 +4,7 @@ import 'package:licoreria_pos/main.dart';
 import 'package:licoreria_pos/models/product.dart';
 import 'package:licoreria_pos/models/sale.dart';
 import 'package:licoreria_pos/presentation/categories/category_detail_screen.dart';
+import 'package:licoreria_pos/core/services/boleta_pdf_service.dart';
 import 'package:licoreria_pos/models/boleta.dart';
 import 'package:licoreria_pos/presentation/boletas/boletas_screen.dart';
 import 'package:licoreria_pos/repositories/boletas_repository.dart';
@@ -830,6 +831,30 @@ void main() {
     await tester.enterText(find.byType(TextField), 'Whisky');
     await tester.pumpAndSettle();
     expect(find.text('B001-00001'), findsOneWidget);
+  });
+
+  test('17. BoletaPdfService: Generación de archivo PDF válido para compartir', () async {
+    final boleta = Boleta(
+      id: 'boleta_pdf_test',
+      numero: 'B001-00042',
+      items: [
+        const BoletaItem(
+          id: '1',
+          nombre: 'Pisco Portón Mosto Verde 750ml',
+          categoria: 'Pisco',
+          cantidad: 1,
+          precioUnitario: 89.0,
+          subtotal: 89.0,
+          metodoPago: 'Yape',
+        ),
+      ],
+    );
+
+    final pdfBytes = await BoletaPdfService.generateBoletaPdf(boleta);
+    expect(pdfBytes, isNotEmpty);
+    // Un archivo PDF siempre inicia con la firma de encabezado "%PDF"
+    final header = String.fromCharCodes(pdfBytes.take(4));
+    expect(header, '%PDF');
   });
 }
 

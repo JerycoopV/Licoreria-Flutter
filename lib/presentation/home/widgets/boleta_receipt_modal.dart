@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../models/boleta.dart';
 import '../../../repositories/sales_repository.dart';
+import '../../../core/services/boleta_pdf_service.dart';
 import '../../boletas/boletas_screen.dart';
 
 /// Modal que muestra el ticket visual de la boleta generada con diseño realista de punto de venta.
@@ -505,6 +506,49 @@ class BoletaReceiptModal extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 16),
+
+                  // ACCIÓN PRINCIPAL: Compartir PDF
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.black87,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                      minimumSize: const Size.fromHeight(48),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    icon: const Icon(Icons.share_rounded, size: 19, color: Colors.black87),
+                    label: const Text(
+                      'Compartir Boleta en PDF',
+                      style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
+                    ),
+                    onPressed: () => BoletaPdfService.shareBoletaPdf(boleta),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  // ACCIÓN: Imprimir o Guardar archivo PDF
+                  OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.textPrimary,
+                      side: const BorderSide(color: AppColors.cardBorder),
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                      minimumSize: const Size.fromHeight(48),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    icon: const Icon(Icons.print_rounded, size: 18, color: AppColors.primary),
+                    label: const Text(
+                      'Imprimir / Guardar archivo PDF',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    onPressed: () => BoletaPdfService.printOrSavePdf(boleta),
+                  ),
+
+                  const SizedBox(height: 10),
 
                   // ACCIÓN: Copiar texto del ticket
                   OutlinedButton.icon(

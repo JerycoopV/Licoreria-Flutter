@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/responsive_layout.dart';
+import '../../core/services/boleta_pdf_service.dart';
 import '../../models/boleta.dart';
 import '../../repositories/boletas_repository.dart';
 import '../home/widgets/boleta_receipt_modal.dart';
@@ -420,6 +421,10 @@ class _BoletasScreenState extends State<BoletasScreen> {
                           onSelected: (val) {
                             if (val == 'view') {
                               BoletaReceiptModal.show(context, boleta: boleta);
+                            } else if (val == 'share_pdf') {
+                              BoletaPdfService.shareBoletaPdf(boleta);
+                            } else if (val == 'print_pdf') {
+                              BoletaPdfService.printOrSavePdf(boleta);
                             } else if (val == 'copy') {
                               Clipboard.setData(
                                   ClipboardData(text: boleta.toPlainTextTicket()));
@@ -442,6 +447,28 @@ class _BoletasScreenState extends State<BoletasScreen> {
                                       size: 18, color: AppColors.primary),
                                   SizedBox(width: 10),
                                   Text('Ver Boleta'),
+                                ],
+                              ),
+                            ),
+                            const PopupMenuItem(
+                              value: 'share_pdf',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.share_rounded,
+                                      size: 18, color: AppColors.primary),
+                                  SizedBox(width: 10),
+                                  Text('Compartir PDF'),
+                                ],
+                              ),
+                            ),
+                            const PopupMenuItem(
+                              value: 'print_pdf',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.print_rounded,
+                                      size: 18, color: AppColors.textSecondary),
+                                  SizedBox(width: 10),
+                                  Text('Imprimir / Guardar PDF'),
                                 ],
                               ),
                             ),
