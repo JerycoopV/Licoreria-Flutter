@@ -235,17 +235,6 @@ class BoletaReceiptModal extends StatelessWidget {
                         // Cabecera de la tabla de productos
                         const Row(
                           children: [
-                            SizedBox(
-                              width: 38,
-                              child: Text(
-                                'CANT',
-                                style: TextStyle(
-                                  color: AppColors.textMuted,
-                                  fontSize: 10.5,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                            ),
                             Expanded(
                               child: Text(
                                 'DESCRIPCIÓN',
@@ -259,8 +248,8 @@ class BoletaReceiptModal extends StatelessWidget {
                             SizedBox(
                               width: 58,
                               child: Text(
-                                'P.UNIT',
-                                textAlign: TextAlign.right,
+                                'Cantidad',
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: AppColors.textMuted,
                                   fontSize: 10.5,
@@ -288,7 +277,9 @@ class BoletaReceiptModal extends StatelessWidget {
                         const SizedBox(height: 8),
 
                         // Lista de productos vendidos
-                        ...boleta.items.map((item) {
+                        ...boleta.items.asMap().entries.map((entry) {
+                          final index = entry.key + 1;
+                          final item = entry.value;
                           final isYape = item.metodoPago.toLowerCase() == 'yape';
                           final methodColor =
                               isYape ? AppColors.yape : AppColors.efectivo;
@@ -299,9 +290,9 @@ class BoletaReceiptModal extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 SizedBox(
-                                  width: 38,
+                                  width: 28,
                                   child: Text(
-                                    '${item.cantidad}x',
+                                    '$index)',
                                     style: const TextStyle(
                                       color: AppColors.textPrimary,
                                       fontSize: 12,
@@ -360,11 +351,12 @@ class BoletaReceiptModal extends StatelessWidget {
                                 SizedBox(
                                   width: 58,
                                   child: Text(
-                                    'S/. ${item.precioUnitario.toStringAsFixed(2)}',
-                                    textAlign: TextAlign.right,
+                                    'x${item.cantidad}',
+                                    textAlign: TextAlign.center,
                                     style: const TextStyle(
                                       color: AppColors.textSecondary,
                                       fontSize: 11.5,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ),

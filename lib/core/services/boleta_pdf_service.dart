@@ -111,19 +111,15 @@ class BoletaPdfService {
                 // Cabecera de la lista de ítems
                 pw.Row(
                   children: [
-                    pw.SizedBox(
-                      width: 18,
-                      child: pw.Text('CANT', style: pw.TextStyle(fontSize: 7, fontWeight: pw.FontWeight.bold)),
-                    ),
                     pw.Expanded(
                       child: pw.Text('DESCRIPCIÓN', style: pw.TextStyle(fontSize: 7, fontWeight: pw.FontWeight.bold)),
                     ),
                     pw.SizedBox(
-                      width: 28,
-                      child: pw.Text('P.UNIT', textAlign: pw.TextAlign.right, style: pw.TextStyle(fontSize: 7, fontWeight: pw.FontWeight.bold)),
+                      width: 38,
+                      child: pw.Text('Cantidad', textAlign: pw.TextAlign.center, style: pw.TextStyle(fontSize: 7, fontWeight: pw.FontWeight.bold)),
                     ),
                     pw.SizedBox(
-                      width: 32,
+                      width: 48,
                       child: pw.Text('TOTAL', textAlign: pw.TextAlign.right, style: pw.TextStyle(fontSize: 7, fontWeight: pw.FontWeight.bold)),
                     ),
                   ],
@@ -134,16 +130,22 @@ class BoletaPdfService {
                 pw.SizedBox(height: 4),
 
                 // Lista de productos
-                ...boleta.items.map((item) {
+                ...boleta.items.asMap().entries.map((entry) {
+                  final index = entry.key + 1;
+                  final item = entry.value;
+                  final catLabel = item.categoria.toLowerCase().contains('(${item.metodoPago.toLowerCase()})')
+                      ? item.categoria
+                      : '${item.categoria} (${item.metodoPago})';
+
                   return pw.Padding(
                     padding: const pw.EdgeInsets.symmetric(vertical: 2.5),
                     child: pw.Row(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: [
                         pw.SizedBox(
-                          width: 18,
+                          width: 16,
                           child: pw.Text(
-                            '${item.cantidad}x',
+                            '$index)',
                             style: pw.TextStyle(fontSize: 7.5, fontWeight: pw.FontWeight.bold),
                           ),
                         ),
@@ -156,25 +158,26 @@ class BoletaPdfService {
                                 style: pw.TextStyle(fontSize: 7.5, fontWeight: pw.FontWeight.bold),
                               ),
                               pw.Text(
-                                '${item.categoria} (${item.metodoPago})',
+                                catLabel,
                                 style: const pw.TextStyle(fontSize: 6.5, color: PdfColors.grey600),
                               ),
                             ],
                           ),
                         ),
                         pw.SizedBox(
-                          width: 28,
+                          width: 38,
                           child: pw.Text(
-                            'S/. ${item.precioUnitario.toStringAsFixed(2)}',
-                            textAlign: pw.TextAlign.right,
+                            'x${item.cantidad}',
+                            textAlign: pw.TextAlign.center,
                             style: const pw.TextStyle(fontSize: 7.5),
                           ),
                         ),
                         pw.SizedBox(
-                          width: 32,
+                          width: 48,
                           child: pw.Text(
                             'S/. ${item.subtotal.toStringAsFixed(2)}',
                             textAlign: pw.TextAlign.right,
+                            maxLines: 1,
                             style: pw.TextStyle(fontSize: 7.5, fontWeight: pw.FontWeight.bold),
                           ),
                         ),

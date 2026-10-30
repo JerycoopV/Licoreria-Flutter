@@ -106,16 +106,17 @@ class Boleta {
     buffer.writeln('--------------------------------');
     buffer.writeln('Fecha: $fechaFormateada');
     buffer.writeln('--------------------------------');
-    buffer.writeln('CANT  PRODUCTO           TOTAL  ');
+    buffer.writeln('DESCRIPCIÓN      CANTIDAD  TOTAL');
     buffer.writeln('--------------------------------');
 
-    for (final item in items) {
-      buffer.writeln('${item.cantidad}x ${item.nombre}');
-      final pUnit = 'P.U: S/. ${item.precioUnitario.toStringAsFixed(2)} (${item.metodoPago})';
+    for (var i = 0; i < items.length; i++) {
+      final item = items[i];
+      buffer.writeln('${i + 1}) ${item.nombre}');
+      final cantLabel = 'Cant: x${item.cantidad} (${item.metodoPago})';
       final sub = 'S/. ${item.subtotal.toStringAsFixed(2)}';
-      final padding = 32 - pUnit.length - sub.length;
+      final padding = 32 - cantLabel.length - sub.length;
       final spaces = padding > 0 ? ' ' * padding : '  ';
-      buffer.writeln('  $pUnit$spaces$sub');
+      buffer.writeln('  $cantLabel$spaces$sub');
     }
 
     buffer.writeln('--------------------------------');
