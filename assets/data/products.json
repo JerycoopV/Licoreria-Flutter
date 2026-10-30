@@ -196,6 +196,13 @@
     "image": null
   },
   {
+    "id": 184,
+    "nombre": "Volt Yellow Botella 300 ml",
+    "categoria": "Bebidas",
+    "precio": 2.5,
+    "image": null
+  },
+  {
     "id": 24,
     "nombre": "Club Soda 24g",
     "categoria": "Galletas",
@@ -644,6 +651,20 @@
     "image": "assets/images/products/vodka_russkaya_750ml.png"
   },
   {
+    "id": 185,
+    "nombre": "Sminoff Botella 355ml",
+    "categoria": "Vodkas",
+    "precio": 9.0,
+    "image": null
+  },
+  {
+    "id": 186,
+    "nombre": "Sminoff Lata 350ml",
+    "categoria": "Vodkas",
+    "precio": 8.5,
+    "image": null
+  },
+  {
     "id": 85,
     "nombre": "Ron Cartavio Black Añejo 750ml",
     "categoria": "Ron",
@@ -670,6 +691,13 @@
     "categoria": "Ron",
     "precio": 52.0,
     "image": "assets/images/products/barcelo_gran_anejo_750ml.png"
+  },
+  {
+    "id": 187,
+    "nombre": "Ron Cartavio 250ml Chata",
+    "categoria": "Ron",
+    "precio": 10.0,
+    "image": null
   },
   {
     "id": 90,
@@ -905,7 +933,7 @@
     "id": 119,
     "nombre": "Four Loko Gold 473ml",
     "categoria": "Bebidas alcohólicas preparadas",
-    "precio": 14.0,
+    "precio": 13.0,
     "image": null
   },
   {
@@ -920,6 +948,34 @@
     "nombre": "Piscano Acholado Lata 310ml",
     "categoria": "Bebidas alcohólicas preparadas",
     "precio": 8.5,
+    "image": null
+  },
+  {
+    "id": 188,
+    "nombre": "Gaseosa Evervess Ginger Ale 1.5 L",
+    "categoria": "Bebidas alcohólicas preparadas",
+    "precio": 6.5,
+    "image": null
+  },
+  {
+    "id": 189,
+    "nombre": "D.Fiesta 2L",
+    "categoria": "Bebidas alcohólicas preparadas",
+    "precio": 6.5,
+    "image": null
+  },
+  {
+    "id": 190,
+    "nombre": "Maniak Lata 500ml",
+    "categoria": "Bebidas alcohólicas preparadas",
+    "precio": 6.5,
+    "image": null
+  },
+  {
+    "id": 191,
+    "nombre": "Mikes Lata 350ml",
+    "categoria": "Bebidas alcohólicas preparadas",
+    "precio": 7.5,
     "image": null
   },
   {
@@ -1286,4 +1342,4 @@
     "precio": 19.0,
     "image": null
   }
-]
+]

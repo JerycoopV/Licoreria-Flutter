@@ -313,6 +313,8 @@ class CatalogRepository extends ChangeNotifier {
           .replaceAll('chile', 'chicle');
       final inkaQuery = normQuery.replaceAll('inca', 'inka');
       final incaQuery = normQuery.replaceAll('inka', 'inca');
+      final smirnoffQuery = normQuery.replaceAll('sminoff', 'smirnoff');
+      final sminoffQuery = normQuery.replaceAll('smirnoff', 'sminoff');
 
       return p.nombre.toLowerCase().contains(cleanQuery) ||
           pNorm.contains(normQuery) ||
@@ -320,7 +322,9 @@ class CatalogRepository extends ChangeNotifier {
           pNorm.contains(pepsoQuery) ||
           pNorm.contains(chilesQuery) ||
           pNorm.contains(inkaQuery) ||
-          pNorm.contains(incaQuery);
+          pNorm.contains(incaQuery) ||
+          pNorm.contains(smirnoffQuery) ||
+          pNorm.contains(sminoffQuery);
     }).toList();
   }
 
