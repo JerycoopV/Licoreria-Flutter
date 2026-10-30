@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../models/boleta.dart';
+import '../../../repositories/boletas_repository.dart';
 import '../../../repositories/sales_repository.dart';
-import '../../../core/services/boleta_pdf_service.dart';
 import '../../boletas/boletas_screen.dart';
 
 /// Modal que muestra el ticket visual de la boleta generada con diseño realista de punto de venta.
@@ -507,90 +506,6 @@ class BoletaReceiptModal extends StatelessWidget {
 
                   const SizedBox(height: 16),
 
-                  // ACCIÓN PRINCIPAL: Compartir PDF
-                  ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.black87,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                      minimumSize: const Size.fromHeight(48),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    icon: const Icon(Icons.share_rounded, size: 19, color: Colors.black87),
-                    label: const Text(
-                      'Compartir Boleta en PDF',
-                      style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
-                    ),
-                    onPressed: () => BoletaPdfService.shareBoletaPdf(boleta),
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  // ACCIÓN: Imprimir o Guardar archivo PDF
-                  OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.textPrimary,
-                      side: const BorderSide(color: AppColors.cardBorder),
-                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                      minimumSize: const Size.fromHeight(48),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    icon: const Icon(Icons.print_rounded, size: 18, color: AppColors.primary),
-                    label: const Text(
-                      'Imprimir / Guardar archivo PDF',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    onPressed: () => BoletaPdfService.printOrSavePdf(boleta),
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  // ACCIÓN: Copiar texto del ticket
-                  OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.textPrimary,
-                      side: const BorderSide(color: AppColors.cardBorder),
-                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                      minimumSize: const Size.fromHeight(48),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    icon: const Icon(Icons.copy_rounded, size: 18),
-                    label: const Text(
-                      'Copiar Boleta como Texto',
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    onPressed: () {
-                      Clipboard.setData(ClipboardData(text: boleta.toPlainTextTicket()));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          backgroundColor: AppColors.surfaceElevated,
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            side: const BorderSide(color: AppColors.cardBorder),
-                          ),
-                          content: const Row(
-                            children: [
-                              Icon(Icons.check_circle_rounded,
-                                  color: AppColors.success, size: 18),
-                              SizedBox(width: 8),
-                              Text('Boleta copiada al portapapeles'),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 10),
-
                   // ACCIÓN: Ver listado de todas las boletas
                   ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
@@ -620,7 +535,7 @@ class BoletaReceiptModal extends StatelessWidget {
                     },
                   ),
 
-                  // Si se solicita la opción de limpiar la lista tras exportar:
+                  // Si se solicita la opción de guardar o limpiar la lista:
                   if (showClearOption) ...[
                     const SizedBox(height: 18),
                     Container(
@@ -663,17 +578,55 @@ class BoletaReceiptModal extends StatelessWidget {
                           Row(
                             children: [
                               Expanded(
-                                child: OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: AppColors.textSecondary,
-                                    side: const BorderSide(
-                                        color: AppColors.cardBorder),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.success,
+                                    foregroundColor: Colors.white,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                   ),
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text('Mantener'),
+                                  onPressed: () async {
+                                    await BoletasRepository().saveBoleta(boleta);
+                                    if (context.mounted) {
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          backgroundColor:
+                                              AppColors.surfaceElevated,
+                                          behavior: SnackBarBehavior.floating,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            side: const BorderSide(
+                                                color: AppColors.cardBorder),
+                                          ),
+                                          content: Row(
+                                            children: [
+                                              const Icon(
+                                                  Icons.check_circle_rounded,
+                                                  color: AppColors.success,
+                                                  size: 20),
+                                              const SizedBox(width: 10),
+                                              Expanded(
+                                                child: Text(
+                                                  '${boleta.numero} guardada en el listado de boletas',
+                                                  style: const TextStyle(
+                                                    color: AppColors.textPrimary,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: const Text(
+                                    'Guardar',
+                                    style: TextStyle(fontWeight: FontWeight.w800),
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 10),
@@ -716,7 +669,7 @@ class BoletaReceiptModal extends StatelessWidget {
                                     }
                                   },
                                   child: const Text(
-                                    'Nueva venta',
+                                    'Limpiar boleta',
                                     style: TextStyle(fontWeight: FontWeight.w800),
                                   ),
                                 ),

@@ -87,7 +87,7 @@ class ExportBoletaButton extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              'EXPORTA BOLETA',
+                              'REVISAR BOLETA',
                               style: TextStyle(
                                 color: hasSales
                                     ? AppColors.primary
@@ -223,38 +223,10 @@ class ExportBoletaButton extends StatelessWidget {
     }
 
     try {
-      final boleta =
-          await BoletasRepository().createBoletaFromSales(sales);
+      final boleta = BoletasRepository().buildBoletaFromSales(sales);
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: AppColors.surfaceElevated,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-              side: const BorderSide(color: AppColors.cardBorder),
-            ),
-            content: Row(
-              children: [
-                const Icon(Icons.check_circle_rounded,
-                    color: AppColors.success, size: 20),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    '${boleta.numero} guardada en el listado de boletas',
-                    style: const TextStyle(
-                      color: AppColors.textPrimary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-
-        // Mostrar el ticket visual con la opción de limpiar la venta actual
+        // Mostrar el ticket visual con las opciones de Guardar o Limpiar boleta
         await BoletaReceiptModal.show(
           context,
           boleta: boleta,
@@ -266,7 +238,7 @@ class ExportBoletaButton extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: AppColors.surfaceElevated,
-            content: Text('Error al exportar boleta: $e'),
+            content: Text('Error al revisar boleta: $e'),
           ),
         );
       }

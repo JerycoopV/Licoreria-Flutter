@@ -63,12 +63,12 @@ class BoletasRepository extends ChangeNotifier {
     }
   }
 
-  /// Crea y guarda una nueva boleta a partir de los productos registrados en ventas
-  Future<Boleta> createBoletaFromSales(
+  /// Construye una boleta en memoria a partir de las ventas actuales (sin guardarla aún)
+  Boleta buildBoletaFromSales(
     List<Sale> sales, {
     String? nota,
     DateTime? customDate,
-  }) async {
+  }) {
     if (sales.isEmpty) {
       throw ArgumentError('No se pueden exportar ventas vacías');
     }
@@ -81,7 +81,9 @@ class BoletasRepository extends ChangeNotifier {
         for (final item in sale.items) {
           boletaItems.add(
             BoletaItem(
-              id: item.id.isNotEmpty ? item.id : 'item_${DateTime.now().microsecondsSinceEpoch}',
+              id: item.id.isNotEmpty
+                  ? item.id
+                  : 'item_${DateTime.now().microsecondsSinceEpoch}',
               nombre: item.productName,
               categoria: sale.categoria,
               cantidad: item.quantity,
@@ -110,18 +112,37 @@ class BoletasRepository extends ChangeNotifier {
     final nextNumber = _boletas.length + 1;
     final numeroFormateado = 'B001-${nextNumber.toString().padLeft(5, '0')}';
 
-    final boleta = Boleta(
+    return Boleta(
       id: 'boleta_${now.millisecondsSinceEpoch}',
       numero: numeroFormateado,
       fecha: now,
       items: boletaItems,
       nota: nota,
     );
+  }
 
-    _boletas.insert(0, boleta);
-    notifyListeners();
+  /// Guarda una boleta en el listado de boletas y la persiste localmente
+  Future<bool> saveBoleta(Boleta boleta) async {
+    final alreadyExists = _boletas.any((b) => b.id == boleta.id);
+    if (!alreadyExists) {
+      _boletas.insert(0, boleta);
+      notifyListeners();
+    }
+    return await _persistBoletas();
+  }
 
-    await _persistBoletas();
+  /// Crea y guarda una nueva boleta a partir de los productos registrados en ventas
+  Future<Boleta> createBoletaFromSales(
+    List<Sale> sales, {
+    String? nota,
+    DateTime? customDate,
+  }) async {
+    final boleta = buildBoletaFromSales(
+      sales,
+      nota: nota,
+      customDate: customDate,
+    );
+    await saveBoleta(boleta);
     return boleta;
   }
 
