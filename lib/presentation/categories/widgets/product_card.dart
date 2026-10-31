@@ -70,51 +70,64 @@ class ProductCard extends StatelessWidget {
                             )
                           : _buildFallbackContainer(),
                     ),
-                    // Badge de disponibilidad
+                    // Badge de categoría del producto
                     Positioned(
                       top: 8,
+                      left: 8,
                       right: 8,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 7,
-                          vertical: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: product.isAvailable
-                              ? AppColors.background.withValues(alpha: 0.85)
-                              : AppColors.error.withValues(alpha: 0.85),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: product.isAvailable
-                                ? AppColors.efectivo.withValues(alpha: 0.4)
-                                : AppColors.error.withValues(alpha: 0.4),
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 7,
+                            vertical: 3,
                           ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: 6,
-                              height: 6,
-                              decoration: BoxDecoration(
-                                color: product.isAvailable
-                                    ? AppColors.efectivo
-                                    : AppColors.error,
-                                shape: BoxShape.circle,
-                              ),
+                          decoration: BoxDecoration(
+                            color: product.isAvailable
+                                ? AppColors.background.withValues(alpha: 0.85)
+                                : AppColors.error.withValues(alpha: 0.85),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: product.isAvailable
+                                  ? accentColor.withValues(alpha: 0.45)
+                                  : AppColors.error.withValues(alpha: 0.4),
                             ),
-                            const SizedBox(width: 4),
-                            Text(
-                              product.isAvailable ? 'Stock' : 'Agotado',
-                              style: TextStyle(
-                                color: product.isAvailable
-                                    ? AppColors.textPrimary
-                                    : Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 6,
+                                height: 6,
+                                decoration: BoxDecoration(
+                                  color: product.isAvailable
+                                      ? accentColor
+                                      : AppColors.error,
+                                  shape: BoxShape.circle,
+                                ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 4),
+                              Flexible(
+                                child: Text(
+                                  product.isAvailable
+                                      ? (product.categoria.toLowerCase() ==
+                                              'vodkas'
+                                          ? 'Vodka'
+                                          : product.categoria)
+                                      : 'Agotado',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: product.isAvailable
+                                        ? AppColors.textPrimary
+                                        : Colors.white,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

@@ -916,6 +916,14 @@
     "image": "assets/images/products/six_pack_golden.png"
   },
   {
+    "id": 192,
+    "nombre": "Six pack Pilsen lata",
+    "categoria": "Cervezas",
+    "subcategoria": "Latas",
+    "precio": 28.0,
+    "image": "assets/images/products/six_pack_pilsen_latas.png"
+  },
+  {
     "id": 117,
     "nombre": "Mike's Hard Lemonade 350ml",
     "categoria": "Bebidas alcohólicas preparadas",

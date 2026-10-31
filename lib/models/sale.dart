@@ -69,6 +69,8 @@ class Sale {
   final List<SaleItem> items;
   final bool isCombined;
   final List<Map<String, dynamic>>? originalSalesData;
+  final double? customCashAmount;
+  final double? customYapeAmount;
 
   Sale({
     required this.id,
@@ -93,19 +95,35 @@ class Sale {
             ((totalAmount ?? 0.0) /
                 ((cantidad != null && cantidad > 0) ? cantidad : 1)),
         metodoPago = metodoPago ?? (paymentMethod?.displayName ?? 'Efectivo'),
+        customCashAmount = cashAmount,
+        customYapeAmount = yapeAmount,
         createdAt = createdAt ?? DateTime.now();
 
   /// Total calculado automáticamente: cantidad × precio unitario
   double get total => precio * cantidad;
 
+  /// Indica si el pago fue dividido entre Efectivo y Yape
+  bool get isSplitPayment =>
+      customCashAmount != null &&
+      customYapeAmount != null &&
+      customCashAmount! > 0 &&
+      customYapeAmount! > 0;
+
   // Getters para compatibilidad con widgets y métricas existentes
   double get totalAmount => total;
   double get cashAmount =>
-      metodoPago.toLowerCase() == 'efectivo' ? total : 0.0;
-  double get yapeAmount => metodoPago.toLowerCase() == 'yape' ? total : 0.0;
-  PaymentMethod get paymentMethod => metodoPago.toLowerCase() == 'yape'
-      ? PaymentMethod.yape
-      : PaymentMethod.efectivo;
+      customCashAmount ??
+      (metodoPago.toLowerCase() == 'efectivo' ? total : 0.0);
+  double get yapeAmount =>
+      customYapeAmount ?? (metodoPago.toLowerCase() == 'yape' ? total : 0.0);
+  PaymentMethod get paymentMethod {
+    if (isSplitPayment || metodoPago.toLowerCase() == 'mixto') {
+      return PaymentMethod.mixto;
+    }
+    return metodoPago.toLowerCase() == 'yape'
+        ? PaymentMethod.yape
+        : PaymentMethod.efectivo;
+  }
 
   /// Retorna las ventas originales si esta venta fue combinada
   List<Sale> get originalSales {
@@ -127,6 +145,8 @@ class Sale {
       if (isCombined) 'is_combined': true,
       if (originalSalesData != null && originalSalesData!.isNotEmpty)
         'original_sales_data': originalSalesData,
+      if (customCashAmount != null) 'cash_amount': customCashAmount,
+      if (customYapeAmount != null) 'yape_amount': customYapeAmount,
     };
   }
 
@@ -157,6 +177,13 @@ class Sale {
       originalData = rawOriginal.whereType<Map<String, dynamic>>().toList();
     }
 
+    final parsedCash = map['cash_amount'] != null
+        ? (map['cash_amount'] as num).toDouble()
+        : null;
+    final parsedYape = map['yape_amount'] != null
+        ? (map['yape_amount'] as num).toDouble()
+        : null;
+
     return Sale(
       id: map['id'],
       nombre: (map['nombre'] ?? map['product_name'] ?? map['note'] ?? 'Venta')
@@ -166,6 +193,8 @@ class Sale {
       cantidad: qty > 0 ? qty : 1,
       precio: unitPrice,
       metodoPago: methodStr,
+      cashAmount: parsedCash,
+      yapeAmount: parsedYape,
       createdAt: map['created_at'] != null
           ? DateTime.tryParse(map['created_at'] as String) ?? DateTime.now()
           : DateTime.now(),

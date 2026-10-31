@@ -55,8 +55,10 @@ class SaleHistoryCard extends StatelessWidget {
               border: Border.all(
                 color: sale.isCombined
                     ? AppColors.yape.withValues(alpha: 0.5)
-                    : AppColors.cardBorder,
-                width: sale.isCombined ? 1.5 : 1.0,
+                    : sale.isSplitPayment
+                        ? AppColors.efectivo.withValues(alpha: 0.5)
+                        : AppColors.cardBorder,
+                width: (sale.isCombined || sale.isSplitPayment) ? 1.5 : 1.0,
               ),
             ),
             child: Row(
@@ -101,6 +103,41 @@ class SaleHistoryCard extends StatelessWidget {
                               ),
                             ),
                           ),
+                          if (sale.isSplitPayment)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.yape.withValues(alpha: 0.22),
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(
+                                  color: AppColors.yape.withValues(alpha: 0.5),
+                                  width: 0.8,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.call_split_rounded,
+                                    size: 10,
+                                    color: AppColors.yape,
+                                  ),
+                                  const SizedBox(width: 2),
+                                  Text(
+                                    'YAPE S/. ${sale.yapeAmount.toStringAsFixed(2)}',
+                                    style: const TextStyle(
+                                      color: AppColors.yape,
+                                      fontSize: 8.5,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 0.3,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           if (sale.isCombined)
                             Container(
                               padding: const EdgeInsets.symmetric(
@@ -160,13 +197,17 @@ class SaleHistoryCard extends StatelessWidget {
                       Text(
                         sale.isCombined
                             ? '${sale.categoria}  •  ${sale.originalSales.isNotEmpty ? "${sale.originalSales.length} ventas unificadas" : "${sale.items.length} productos"}'
-                            : '${sale.categoria}  •  ${sale.cantidad} x S/. ${sale.precio.toStringAsFixed(2)}',
+                            : sale.isSplitPayment
+                                ? 'Efectivo: S/. ${sale.cashAmount.toStringAsFixed(2)}  •  Yape: S/. ${sale.yapeAmount.toStringAsFixed(2)}'
+                                : '${sale.categoria}  •  ${sale.cantidad} x S/. ${sale.precio.toStringAsFixed(2)}',
                         style: TextStyle(
                           color: sale.isCombined
                               ? AppColors.yape.withValues(alpha: 0.9)
-                              : AppColors.textSecondary,
+                              : sale.isSplitPayment
+                                  ? AppColors.efectivo.withValues(alpha: 0.95)
+                                  : AppColors.textSecondary,
                           fontSize: 11.5,
-                          fontWeight: sale.isCombined
+                          fontWeight: (sale.isCombined || sale.isSplitPayment)
                               ? FontWeight.w600
                               : FontWeight.normal,
                         ),
@@ -223,8 +264,24 @@ class SaleHistoryCard extends StatelessWidget {
                               ),
                             ),
                           ),
+                        if (!isYape && onTap != null)
+                          InkWell(
+                            onTap: onTap,
+                            borderRadius: BorderRadius.circular(6),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Icon(
+                                Icons.call_split_rounded,
+                                size: 17,
+                                color: sale.isSplitPayment
+                                    ? AppColors.yape
+                                    : AppColors.efectivo,
+                              ),
+                            ),
+                          ),
                         if (onDelete != null) ...[
-                          if (isYape && onCombine != null)
+                          if ((isYape && onCombine != null) ||
+                              (!isYape && onTap != null))
                             const SizedBox(width: 4),
                           InkWell(
                             onTap: onDelete,

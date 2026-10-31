@@ -233,7 +233,7 @@ class BoletaPdfService {
                     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                     children: [
                       pw.Text(
-                        'TOTAL A PAGAR',
+                        'Total',
                         style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold),
                       ),
                       pw.Text(

@@ -102,7 +102,11 @@ class BoletasRepository extends ChangeNotifier {
             cantidad: sale.cantidad,
             precioUnitario: sale.precio,
             subtotal: sale.total,
-            metodoPago: sale.metodoPago,
+            metodoPago: sale.isSplitPayment
+                ? 'Efectivo (S/. ${sale.cashAmount.toStringAsFixed(2)}) + Yape (S/. ${sale.yapeAmount.toStringAsFixed(2)})'
+                : sale.metodoPago,
+            montoEfectivo: sale.isSplitPayment ? sale.cashAmount : null,
+            montoYape: sale.isSplitPayment ? sale.yapeAmount : null,
           ),
         );
       }

@@ -22,63 +22,54 @@ class SalesRepository extends ChangeNotifier {
   List<Sale> get sales => List.unmodifiable(_sales);
   bool get isLoaded => _isLoaded;
 
-  /// Carga las ventas almacenadas localmente en el dispositivo
+  /// Carga las ventas almacenadas localmente en el dispositivo.
+  /// En navegador (Web) o cuando se inicia desde 0 sin datos en caché, el historial inicia vacío.
+  /// En móvil se conservan los datos guardados en caché (SharedPreferences) a menos que se borre el caché.
   Future<List<Sale>> loadSales() async {
     try {
       final prefs = await SharedPreferences.getInstance();
+
+      if (kIsWeb) {
+        // En navegador siempre empieza desde 0 con el historial vacío al iniciar la aplicación
+        _sales.clear();
+        await prefs.remove(_storageKey);
+        _isLoaded = true;
+        notifyListeners();
+        return _sales;
+      }
+
       final jsonString = prefs.getString(_storageKey);
 
       if (jsonString != null && jsonString.isNotEmpty) {
         final List<dynamic> decoded = json.decode(jsonString) as List<dynamic>;
         _sales.clear();
+        bool hadDemoData = false;
         for (final item in decoded) {
           if (item is Map<String, dynamic>) {
-            _sales.add(Sale.fromMap(item));
+            final sale = Sale.fromMap(item);
+            // Ignorar ventas demostrativas antiguas si quedaron en caché
+            if (sale.note == 'Venta inicial demostrativa') {
+              hadDemoData = true;
+              continue;
+            }
+            _sales.add(sale);
           }
         }
-      } else if (_sales.isEmpty) {
-        // Primera ejecución: cargar datos demostrativos
-        _loadInitialData();
-        await _persistSales();
+        if (hadDemoData) {
+          await _persistSales();
+        }
+      } else {
+        // Primera ejecución o caché borrado: el historial inicia completamente vacío
+        _sales.clear();
       }
       _isLoaded = true;
     } catch (e) {
       debugPrint('Error cargando ventas locales: $e');
-      if (_sales.isEmpty) {
-        _loadInitialData();
-      }
       _isLoaded = true;
     }
 
     notifyListeners();
     return _sales;
-  }
-
-  /// Carga registros de demostración iniciales para la primera apertura
-  void _loadInitialData() {
-    final now = DateTime.now();
-    _sales.addAll([
-      Sale(
-        id: 1,
-        nombre: 'Pisco Portón Mosto Verde 750ml',
-        categoria: 'Pisco',
-        cantidad: 1,
-        precio: 89.00,
-        metodoPago: 'Yape',
-        createdAt: now.subtract(const Duration(hours: 2, minutes: 15)),
-        note: 'Venta inicial demostrativa',
-      ),
-      Sale(
-        id: 2,
-        nombre: 'Six Pack Pilsen Callao Latas',
-        categoria: 'Cervezas',
-        cantidad: 2,
-        precio: 32.00,
-        metodoPago: 'Efectivo',
-        createdAt: now.subtract(const Duration(hours: 5, minutes: 30)),
-        note: 'Venta inicial demostrativa',
-      ),
-    ]);
   }
 
   /// Persiste la lista completa de ventas localmente en el almacenamiento del dispositivo
@@ -249,6 +240,71 @@ class SalesRepository extends ChangeNotifier {
     _sales.removeAt(index);
     _sales.insertAll(index, originals);
 
+    notifyListeners();
+    return await _persistSales();
+  }
+
+  /// Divide el pago de una venta entre Efectivo y Yape
+  Future<bool> splitSaleWithYape({
+    required dynamic saleId,
+    required double cashAmount,
+    required double yapeAmount,
+  }) async {
+    final index =
+        _sales.indexWhere((s) => s.id.toString() == saleId.toString());
+    if (index < 0) return false;
+
+    final current = _sales[index];
+    if (cashAmount < 0 || yapeAmount < 0) return false;
+
+    // Si todo vuelve a Efectivo (yape == 0)
+    if (yapeAmount <= 0.001) {
+      return await restoreSplitSaleToCash(saleId);
+    }
+
+    final updatedSale = Sale(
+      id: current.id,
+      nombre: current.nombre,
+      categoria: current.categoria,
+      cantidad: current.cantidad,
+      precio: current.precio,
+      metodoPago: 'Efectivo',
+      cashAmount: cashAmount,
+      yapeAmount: yapeAmount,
+      createdAt: current.createdAt,
+      note: current.note,
+      items: current.items,
+      isCombined: current.isCombined,
+      originalSalesData: current.originalSalesData,
+    );
+
+    _sales[index] = updatedSale;
+    notifyListeners();
+    return await _persistSales();
+  }
+
+  /// Restaura una venta con pago dividido a 100% Efectivo
+  Future<bool> restoreSplitSaleToCash(dynamic saleId) async {
+    final index =
+        _sales.indexWhere((s) => s.id.toString() == saleId.toString());
+    if (index < 0) return false;
+
+    final current = _sales[index];
+    final restoredSale = Sale(
+      id: current.id,
+      nombre: current.nombre,
+      categoria: current.categoria,
+      cantidad: current.cantidad,
+      precio: current.precio,
+      metodoPago: 'Efectivo',
+      createdAt: current.createdAt,
+      note: current.note,
+      items: current.items,
+      isCombined: current.isCombined,
+      originalSalesData: current.originalSalesData,
+    );
+
+    _sales[index] = restoredSale;
     notifyListeners();
     return await _persistSales();
   }

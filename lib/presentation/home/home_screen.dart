@@ -9,6 +9,7 @@ import 'widgets/export_boleta_button.dart';
 import 'widgets/new_sale_button.dart';
 import 'widgets/quick_metrics_bar.dart';
 import 'widgets/sale_history_card.dart';
+import 'widgets/split_cash_yape_modal.dart';
 import '../boletas/boletas_screen.dart';
 
 /// Pantalla Principal: Sencilla, limpia y enfocada en la rapidez de registro.
@@ -130,7 +131,7 @@ class HomeScreen extends StatelessWidget {
 
                   const SliverToBoxAdapter(child: SizedBox(height: 12)),
 
-                  // Botón Exporta Boleta al inicio de la lista
+                  // Botón Revisar Boleta al inicio de la lista
                   SliverToBoxAdapter(
                     child: ExportBoletaButton(sales: sales),
                   ),
@@ -182,11 +183,16 @@ class HomeScreen extends StatelessWidget {
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final sale = sales[index];
+                          final isYape =
+                              sale.metodoPago.toLowerCase() == 'yape';
                           return SaleHistoryCard(
                             sale: sale,
                             onDelete: () => salesRepo.removeSale(sale.id),
-                            onCombine: sale.metodoPago.toLowerCase() == 'yape'
+                            onCombine: isYape
                                 ? () => _handleYapeAction(context, sale)
+                                : null,
+                            onTap: !isYape
+                                ? () => _handleCashAction(context, sale)
                                 : null,
                           );
                         },
@@ -202,6 +208,39 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _handleCashAction(BuildContext context, Sale sale) async {
+    final result = await SplitCashYapeModal.show(context, sale: sale);
+    if (result == true && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.surfaceElevated,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: const BorderSide(color: AppColors.cardBorder),
+          ),
+          content: const Row(
+            children: [
+              Icon(Icons.check_circle_rounded,
+                  color: AppColors.efectivo, size: 20),
+              SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'Pago actualizado entre Efectivo y Yape',
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 
   void _handleYapeAction(BuildContext context, Sale sale) async {

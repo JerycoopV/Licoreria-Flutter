@@ -9,6 +9,8 @@ class BoletaItem {
   final double precioUnitario;
   final double subtotal;
   final String metodoPago;
+  final double? montoEfectivo;
+  final double? montoYape;
 
   const BoletaItem({
     required this.id,
@@ -18,7 +20,22 @@ class BoletaItem {
     required this.precioUnitario,
     required this.subtotal,
     required this.metodoPago,
+    this.montoEfectivo,
+    this.montoYape,
   });
+
+  bool get isSplitPayment =>
+      montoEfectivo != null &&
+      montoYape != null &&
+      montoEfectivo! > 0 &&
+      montoYape! > 0;
+
+  double get efectivoAmount =>
+      montoEfectivo ??
+      (metodoPago.toLowerCase() == 'efectivo' ? subtotal : 0.0);
+
+  double get yapeAmount =>
+      montoYape ?? (metodoPago.toLowerCase() == 'yape' ? subtotal : 0.0);
 
   Map<String, dynamic> toMap() {
     return {
@@ -29,6 +46,8 @@ class BoletaItem {
       'precio_unitario': precioUnitario,
       'subtotal': subtotal,
       'metodo_pago': metodoPago,
+      if (montoEfectivo != null) 'monto_efectivo': montoEfectivo,
+      if (montoYape != null) 'monto_yape': montoYape,
     };
   }
 
@@ -47,6 +66,12 @@ class BoletaItem {
       precioUnitario: pUnit,
       subtotal: sub,
       metodoPago: (map['metodo_pago'] ?? 'Efectivo').toString(),
+      montoEfectivo: map['monto_efectivo'] != null
+          ? (map['monto_efectivo'] as num).toDouble()
+          : null,
+      montoYape: map['monto_yape'] != null
+          ? (map['monto_yape'] as num).toDouble()
+          : null,
     );
   }
 }
@@ -76,13 +101,9 @@ class Boleta {
   })  : fecha = fecha ?? DateTime.now(),
         total = total ?? items.fold(0.0, (sum, i) => sum + i.subtotal),
         totalEfectivo = totalEfectivo ??
-            items
-                .where((i) => i.metodoPago.toLowerCase() == 'efectivo')
-                .fold(0.0, (sum, i) => sum + i.subtotal),
+            items.fold(0.0, (sum, i) => sum + i.efectivoAmount),
         totalYape = totalYape ??
-            items
-                .where((i) => i.metodoPago.toLowerCase() == 'yape')
-                .fold(0.0, (sum, i) => sum + i.subtotal),
+            items.fold(0.0, (sum, i) => sum + i.yapeAmount),
         cantidadProductos = cantidadProductos ??
             items.fold(0, (sum, i) => sum + i.cantidad);
 
@@ -126,7 +147,7 @@ class Boleta {
     if (totalYape > 0) {
       buffer.writeln('Yape:          S/. ${totalYape.toStringAsFixed(2)}');
     }
-    buffer.writeln('TOTAL A PAGAR: S/. ${total.toStringAsFixed(2)}');
+    buffer.writeln('Total:         S/. ${total.toStringAsFixed(2)}');
     buffer.writeln('================================');
     buffer.writeln('    ¡Gracias por su compra!     ');
     buffer.writeln('================================');

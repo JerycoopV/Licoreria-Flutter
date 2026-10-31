@@ -313,7 +313,11 @@ class BoletaReceiptModal extends StatelessWidget {
                                         ),
                                       ),
                                       const SizedBox(height: 2),
-                                      Row(
+                                      Wrap(
+                                        spacing: 6,
+                                        runSpacing: 3,
+                                        crossAxisAlignment:
+                                            WrapCrossAlignment.center,
                                         children: [
                                           Container(
                                             padding: const EdgeInsets.symmetric(
@@ -335,7 +339,6 @@ class BoletaReceiptModal extends StatelessWidget {
                                               ),
                                             ),
                                           ),
-                                          const SizedBox(width: 6),
                                           Text(
                                             item.categoria,
                                             style: const TextStyle(
@@ -463,7 +466,7 @@ class BoletaReceiptModal extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text(
-                                'TOTAL A PAGAR',
+                                'Total',
                                 style: TextStyle(
                                   color: AppColors.textPrimary,
                                   fontSize: 14,
