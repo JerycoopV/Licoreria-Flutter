@@ -96,6 +96,10 @@ class SalesRepository extends ChangeNotifier {
   double get totalYapeAmount =>
       _sales.fold(0.0, (sum, item) => sum + item.yapeAmount);
 
+  /// Total recibido por Tarjeta de crédito (incluyendo el 5% de comisión)
+  double get totalCardAmount =>
+      _sales.fold(0.0, (sum, item) => sum + item.cardAmount);
+
   /// Registra una nueva venta con validaciones estrictas
   Future<bool> recordSale(Sale sale) async {
     // Validaciones de negocio

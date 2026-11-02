@@ -42,11 +42,18 @@ class QuickSaleModal extends StatefulWidget {
 
 class _QuickSaleModalState extends State<QuickSaleModal> {
   int _quantity = 1;
-  String _selectedPaymentMethod = 'Efectivo'; // 'Efectivo' o 'Yape'
+  String _selectedPaymentMethod =
+      'Efectivo'; // 'Efectivo', 'Yape' o 'Tarjeta de crédito'
   bool _isProcessing = false;
   String? _validationError;
 
-  double get _totalAmount => widget.product.precio * _quantity;
+  bool get _isCardPayment => _selectedPaymentMethod == 'Tarjeta de crédito';
+  double get _baseAmount => widget.product.precio * _quantity;
+  double get _commissionAmount => _isCardPayment
+      ? double.parse((_baseAmount * 0.05).toStringAsFixed(2))
+      : 0.0;
+  double get _totalAmount =>
+      double.parse((_baseAmount + _commissionAmount).toStringAsFixed(2));
 
   void _increment() {
     setState(() {
@@ -102,14 +109,18 @@ class _QuickSaleModalState extends State<QuickSaleModal> {
     });
 
     try {
-      // 2. Crear el registro de venta con los campos oficiales
+      // 2. Crear el registro de venta con los campos oficiales (aplicando +5% si es Tarjeta de crédito)
+      final effectiveUnitPrice = _isCardPayment
+          ? double.parse((widget.product.precio * 1.05).toStringAsFixed(2))
+          : widget.product.precio;
+
       final newSale = Sale(
         id: DateTime.now().millisecondsSinceEpoch,
         nombre: widget.product.nombre,
         categoria: widget.product.categoria,
         cantidad: _quantity,
-        precio: widget.product.precio, // PRECIO UNITARIO
-        metodoPago: _selectedPaymentMethod, // "Efectivo" o "Yape"
+        precio: effectiveUnitPrice, // PRECIO UNITARIO (con +5% si es tarjeta)
+        metodoPago: _selectedPaymentMethod,
         createdAt: DateTime.now(),
       );
 
@@ -421,7 +432,9 @@ class _QuickSaleModalState extends State<QuickSaleModal> {
                         ),
                       ),
                       Text(
-                        '$_quantity × S/. ${widget.product.precio.toStringAsFixed(2)}',
+                        _isCardPayment
+                            ? '$_quantity × S/. ${widget.product.precio.toStringAsFixed(2)} + 5% comisión (S/. ${_commissionAmount.toStringAsFixed(2)})'
+                            : '$_quantity × S/. ${widget.product.precio.toStringAsFixed(2)}',
                         style: const TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 12,
@@ -597,6 +610,93 @@ class _QuickSaleModalState extends State<QuickSaleModal> {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 10),
+
+            // Opción Tarjeta de crédito (+5% comisión)
+            InkWell(
+              onTap: () {
+                setState(() {
+                  _selectedPaymentMethod = 'Tarjeta de crédito';
+                  _validationError = null;
+                });
+              },
+              borderRadius: BorderRadius.circular(14),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                decoration: BoxDecoration(
+                  color: _isCardPayment
+                      ? AppColors.tarjeta.withValues(alpha: 0.15)
+                      : AppColors.surfaceElevated,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: _isCardPayment
+                        ? AppColors.tarjeta
+                        : AppColors.cardBorder,
+                    width: _isCardPayment ? 2 : 1,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 20,
+                      height: 20,
+                      margin: const EdgeInsets.only(right: 8),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: _isCardPayment
+                              ? AppColors.tarjeta
+                              : AppColors.textMuted,
+                          width: 2,
+                        ),
+                      ),
+                      child: _isCardPayment
+                          ? Center(
+                              child: Container(
+                                width: 10,
+                                height: 10,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: AppColors.tarjeta,
+                                ),
+                              ),
+                            )
+                          : null,
+                    ),
+                    const Icon(Icons.credit_card_rounded,
+                        color: AppColors.tarjeta, size: 20),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                      child: Text(
+                        'Tarjeta de crédito',
+                        style: TextStyle(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 13.5,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: AppColors.tarjeta.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Text(
+                        '+5% comisión',
+                        style: TextStyle(
+                          color: AppColors.tarjeta,
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
 
             if (_validationError != null) ...[

@@ -249,6 +249,7 @@ class _BoletasScreenState extends State<BoletasScreen> {
   ) {
     final hasEfectivo = boleta.totalEfectivo > 0;
     final hasYape = boleta.totalYape > 0;
+    final hasTarjeta = boleta.totalTarjeta > 0;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -361,6 +362,7 @@ class _BoletasScreenState extends State<BoletasScreen> {
                           ),
                         if (hasYape)
                           Container(
+                            margin: const EdgeInsets.only(right: 6),
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 7, vertical: 3),
                             decoration: BoxDecoration(
@@ -376,6 +378,30 @@ class _BoletasScreenState extends State<BoletasScreen> {
                                   'Yape',
                                   style: TextStyle(
                                     color: AppColors.yape,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        if (hasTarjeta)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 7, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: AppColors.tarjeta.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: const Row(
+                              children: [
+                                Icon(Icons.credit_card_rounded,
+                                    size: 12, color: AppColors.tarjeta),
+                                SizedBox(width: 4),
+                                Text(
+                                  'Tarjeta',
+                                  style: TextStyle(
+                                    color: AppColors.tarjeta,
                                     fontSize: 10,
                                     fontWeight: FontWeight.w700,
                                   ),

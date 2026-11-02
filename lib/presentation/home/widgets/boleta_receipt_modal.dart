@@ -281,8 +281,13 @@ class BoletaReceiptModal extends StatelessWidget {
                           final index = entry.key + 1;
                           final item = entry.value;
                           final isYape = item.metodoPago.toLowerCase() == 'yape';
-                          final methodColor =
-                              isYape ? AppColors.yape : AppColors.efectivo;
+                          final isCard =
+                              item.metodoPago.toLowerCase().contains('tarjeta');
+                          final methodColor = isYape
+                              ? AppColors.yape
+                              : isCard
+                                  ? AppColors.tarjeta
+                                  : AppColors.efectivo;
 
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 6.0),
@@ -441,6 +446,38 @@ class BoletaReceiptModal extends StatelessWidget {
                                   'S/. ${boleta.totalYape.toStringAsFixed(2)}',
                                   style: const TextStyle(
                                     color: AppColors.yape,
+                                    fontSize: 12.5,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                        if (boleta.totalTarjeta > 0)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 4),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Row(
+                                  children: [
+                                    Icon(Icons.credit_card_rounded,
+                                        size: 14, color: AppColors.tarjeta),
+                                    SizedBox(width: 6),
+                                    Text(
+                                      'Tarjeta de crédito:',
+                                      style: TextStyle(
+                                        color: AppColors.textSecondary,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  'S/. ${boleta.totalTarjeta.toStringAsFixed(2)}',
+                                  style: const TextStyle(
+                                    color: AppColors.tarjeta,
                                     fontSize: 12.5,
                                     fontWeight: FontWeight.w700,
                                   ),

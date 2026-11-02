@@ -28,9 +28,13 @@ class SaleHistoryCard extends StatelessWidget {
     IconData methodIcon;
 
     final isYape = sale.metodoPago.toLowerCase() == 'yape';
+    final isCard = sale.isCardPayment;
     if (isYape) {
       methodColor = AppColors.yape;
       methodIcon = Icons.qr_code_rounded;
+    } else if (isCard) {
+      methodColor = AppColors.tarjeta;
+      methodIcon = Icons.credit_card_rounded;
     } else {
       methodColor = AppColors.efectivo;
       methodIcon = Icons.payments_rounded;

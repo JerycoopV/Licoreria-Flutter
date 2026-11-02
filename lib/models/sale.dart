@@ -2,6 +2,7 @@
 enum PaymentMethod {
   efectivo,
   yape,
+  tarjeta,
   mixto;
 
   String get displayName {
@@ -10,6 +11,8 @@ enum PaymentMethod {
         return 'Efectivo';
       case PaymentMethod.yape:
         return 'Yape';
+      case PaymentMethod.tarjeta:
+        return 'Tarjeta de crédito';
       case PaymentMethod.mixto:
         return 'Mixto';
     }
@@ -111,14 +114,19 @@ class Sale {
 
   // Getters para compatibilidad con widgets y métricas existentes
   double get totalAmount => total;
+  bool get isCardPayment => metodoPago.toLowerCase().contains('tarjeta');
   double get cashAmount =>
       customCashAmount ??
       (metodoPago.toLowerCase() == 'efectivo' ? total : 0.0);
   double get yapeAmount =>
       customYapeAmount ?? (metodoPago.toLowerCase() == 'yape' ? total : 0.0);
+  double get cardAmount => isCardPayment ? total : 0.0;
   PaymentMethod get paymentMethod {
     if (isSplitPayment || metodoPago.toLowerCase() == 'mixto') {
       return PaymentMethod.mixto;
+    }
+    if (isCardPayment) {
+      return PaymentMethod.tarjeta;
     }
     return metodoPago.toLowerCase() == 'yape'
         ? PaymentMethod.yape

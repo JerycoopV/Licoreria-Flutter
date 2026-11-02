@@ -20,6 +20,7 @@ class AppColors {
   // Colores de Medios de Pago
   static const Color yape = Color(0xFF7C3AED);       // Violeta Yape distintivo
   static const Color efectivo = Color(0xFF10B981);   // Esmeralda Efectivo
+  static const Color tarjeta = Color(0xFF3B82F6);    // Azul Tarjeta de Crédito
 
   // Textos
   static const Color textPrimary = Color(0xFFF8FAFC);

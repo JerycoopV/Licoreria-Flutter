@@ -221,6 +221,21 @@ class BoletaPdfService {
                     ),
                   ),
 
+                if (boleta.totalTarjeta > 0)
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.only(bottom: 2),
+                    child: pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                      children: [
+                        pw.Text('Pago Tarjeta de crédito:', style: const pw.TextStyle(fontSize: 7.5, color: PdfColors.grey700)),
+                        pw.Text(
+                          'S/. ${boleta.totalTarjeta.toStringAsFixed(2)}',
+                          style: const pw.TextStyle(fontSize: 7.5),
+                        ),
+                      ],
+                    ),
+                  ),
+
                 pw.SizedBox(height: 4),
                 pw.Container(
                   padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 6),

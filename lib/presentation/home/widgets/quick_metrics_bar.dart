@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 
-/// Barra de métricas rápidas con desglose de Total General, Efectivo y Yape.
+/// Barra de métricas rápidas con desglose de Total General, Efectivo, Yape y Tarjeta.
 class QuickMetricsBar extends StatelessWidget {
   final double grandTotal;
   final double cashTotal;
   final double yapeTotal;
+  final double cardTotal;
   final int count;
 
   const QuickMetricsBar({
@@ -13,6 +14,7 @@ class QuickMetricsBar extends StatelessWidget {
     required this.grandTotal,
     required this.cashTotal,
     required this.yapeTotal,
+    this.cardTotal = 0.0,
     required this.count,
   });
 
@@ -61,7 +63,8 @@ class QuickMetricsBar extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceElevated,
                   borderRadius: BorderRadius.circular(20),
@@ -112,6 +115,19 @@ class QuickMetricsBar extends StatelessWidget {
                   icon: Icons.qr_code_rounded,
                 ),
               ),
+              Container(
+                height: 28,
+                width: 1,
+                color: AppColors.cardBorder,
+              ),
+              Expanded(
+                child: _buildMetricItem(
+                  title: 'Tarjeta',
+                  amount: cardTotal,
+                  color: AppColors.tarjeta,
+                  icon: Icons.credit_card_rounded,
+                ),
+              ),
             ],
           ),
         ],
@@ -126,7 +142,7 @@ class QuickMetricsBar extends StatelessWidget {
     required IconData icon,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 6.0),
       child: Row(
         children: [
           Container(
@@ -135,9 +151,9 @@ class QuickMetricsBar extends StatelessWidget {
               color: color.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, size: 16, color: color),
+            child: Icon(icon, size: 15, color: color),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 6),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,9 +162,11 @@ class QuickMetricsBar extends StatelessWidget {
                   title,
                   style: const TextStyle(
                     color: AppColors.textSecondary,
-                    fontSize: 11,
+                    fontSize: 10.5,
                     fontWeight: FontWeight.w500,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 FittedBox(
                   fit: BoxFit.scaleDown,
@@ -157,7 +175,7 @@ class QuickMetricsBar extends StatelessWidget {
                     'S/. ${amount.toStringAsFixed(2)}',
                     style: TextStyle(
                       color: color,
-                      fontSize: 14,
+                      fontSize: 13.5,
                       fontWeight: FontWeight.w700,
                     ),
                   ),

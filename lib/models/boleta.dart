@@ -37,6 +37,9 @@ class BoletaItem {
   double get yapeAmount =>
       montoYape ?? (metodoPago.toLowerCase() == 'yape' ? subtotal : 0.0);
 
+  double get tarjetaAmount =>
+      metodoPago.toLowerCase().contains('tarjeta') ? subtotal : 0.0;
+
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -85,6 +88,7 @@ class Boleta {
   final double total;
   final double totalEfectivo;
   final double totalYape;
+  final double totalTarjeta;
   final int cantidadProductos;
   final String? nota;
 
@@ -96,6 +100,7 @@ class Boleta {
     double? total,
     double? totalEfectivo,
     double? totalYape,
+    double? totalTarjeta,
     int? cantidadProductos,
     this.nota,
   })  : fecha = fecha ?? DateTime.now(),
@@ -104,6 +109,8 @@ class Boleta {
             items.fold(0.0, (sum, i) => sum + i.efectivoAmount),
         totalYape = totalYape ??
             items.fold(0.0, (sum, i) => sum + i.yapeAmount),
+        totalTarjeta = totalTarjeta ??
+            items.fold(0.0, (sum, i) => sum + i.tarjetaAmount),
         cantidadProductos = cantidadProductos ??
             items.fold(0, (sum, i) => sum + i.cantidad);
 
@@ -147,6 +154,9 @@ class Boleta {
     if (totalYape > 0) {
       buffer.writeln('Yape:          S/. ${totalYape.toStringAsFixed(2)}');
     }
+    if (totalTarjeta > 0) {
+      buffer.writeln('Tarjeta:       S/. ${totalTarjeta.toStringAsFixed(2)}');
+    }
     buffer.writeln('Total:         S/. ${total.toStringAsFixed(2)}');
     buffer.writeln('================================');
     buffer.writeln('    ¡Gracias por su compra!     ');
@@ -164,6 +174,7 @@ class Boleta {
       'total': total,
       'total_efectivo': totalEfectivo,
       'total_yape': totalYape,
+      'total_tarjeta': totalTarjeta,
       'cantidad_productos': cantidadProductos,
       if (nota != null) 'nota': nota,
     };
@@ -188,6 +199,9 @@ class Boleta {
       total: ((map['total'] ?? 0.0) as num).toDouble(),
       totalEfectivo: ((map['total_efectivo'] ?? 0.0) as num).toDouble(),
       totalYape: ((map['total_yape'] ?? 0.0) as num).toDouble(),
+      totalTarjeta: map['total_tarjeta'] != null
+          ? ((map['total_tarjeta'] ?? 0.0) as num).toDouble()
+          : null,
       cantidadProductos: ((map['cantidad_productos'] ?? 0) as num).toInt(),
       nota: map['nota'] as String?,
     );

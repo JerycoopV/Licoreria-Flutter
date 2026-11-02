@@ -70,6 +70,7 @@ class HomeScreen extends StatelessWidget {
                       grandTotal: salesRepo.totalSalesAmount,
                       cashTotal: salesRepo.totalCashAmount,
                       yapeTotal: salesRepo.totalYapeAmount,
+                      cardTotal: salesRepo.totalCardAmount,
                       count: sales.length,
                     ),
                   ),
@@ -185,13 +186,15 @@ class HomeScreen extends StatelessWidget {
                           final sale = sales[index];
                           final isYape =
                               sale.metodoPago.toLowerCase() == 'yape';
+                          final isCash =
+                              sale.metodoPago.toLowerCase() == 'efectivo';
                           return SaleHistoryCard(
                             sale: sale,
                             onDelete: () => salesRepo.removeSale(sale.id),
                             onCombine: isYape
                                 ? () => _handleYapeAction(context, sale)
                                 : null,
-                            onTap: !isYape
+                            onTap: isCash
                                 ? () => _handleCashAction(context, sale)
                                 : null,
                           );
