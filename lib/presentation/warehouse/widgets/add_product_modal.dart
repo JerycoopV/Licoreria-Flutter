@@ -437,90 +437,101 @@ class _AddProductModalState extends State<AddProductModal> {
                 title: 'ESCOGE O ESCRIBE EL PRECIO (S/.)',
               ),
               const SizedBox(height: 8),
-              Row(
-                children: [
-                  // Botón restar S/ 1.00
-                  _PriceAdjustButton(
-                    label: '-1.00',
-                    onTap: () => _adjustPrice(-1.0),
-                  ),
-                  const SizedBox(width: 6),
-                  // Botón restar S/ 0.50
-                  _PriceAdjustButton(
-                    label: '-0.50',
-                    onTap: () => _adjustPrice(-0.5),
-                  ),
-                  const SizedBox(width: 8),
 
-                  // Campo central de precio
-                  Expanded(
-                    child: TextField(
-                      controller: _priceController,
-                      keyboardType:
-                          const TextInputType.numberWithOptions(decimal: true),
-                      textAlign: TextAlign.center,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                          RegExp(r'^\d*[.,]?\d{0,2}'),
-                        ),
-                      ],
-                      onChanged: (_) {
-                        if (_errorMessage != null) {
-                          setState(() => _errorMessage = null);
-                        }
-                      },
-                      style: const TextStyle(
+              // Campo principal de precio a ancho completo para móviles
+              TextField(
+                controller: _priceController,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                textAlign: TextAlign.center,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(
+                    RegExp(r'^\d*[.,]?\d{0,2}'),
+                  ),
+                ],
+                onChanged: (_) {
+                  if (_errorMessage != null) {
+                    setState(() => _errorMessage = null);
+                  }
+                },
+                style: const TextStyle(
+                  color: AppColors.primary,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                ),
+                decoration: InputDecoration(
+                  prefixIcon: const Padding(
+                    padding: EdgeInsets.only(left: 16, right: 8),
+                    child: Text(
+                      'S/.',
+                      style: TextStyle(
                         color: AppColors.primary,
                         fontSize: 18,
                         fontWeight: FontWeight.w900,
                       ),
-                      decoration: InputDecoration(
-                        prefixText: 'S/. ',
-                        prefixStyle: const TextStyle(
-                          color: AppColors.primary,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
-                        ),
-                        hintText: '0.00',
-                        hintStyle: const TextStyle(
-                          color: AppColors.textMuted,
-                          fontSize: 16,
-                        ),
-                        filled: true,
-                        fillColor: AppColors.surfaceElevated,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 13,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide:
-                              const BorderSide(color: AppColors.cardBorder),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: const BorderSide(
-                            color: AppColors.primary,
-                            width: 1.5,
-                          ),
-                        ),
-                      ),
                     ),
                   ),
-
-                  const SizedBox(width: 8),
-                  // Botón sumar S/ 0.50
-                  _PriceAdjustButton(
-                    label: '+0.50',
-                    isPositive: true,
-                    onTap: () => _adjustPrice(0.5),
+                  prefixIconConstraints: const BoxConstraints(
+                    minWidth: 0,
+                    minHeight: 0,
                   ),
-                  const SizedBox(width: 6),
-                  // Botón sumar S/ 1.00
-                  _PriceAdjustButton(
-                    label: '+1.00',
-                    isPositive: true,
-                    onTap: () => _adjustPrice(1.0),
+                  hintText: '0.00',
+                  hintStyle: const TextStyle(
+                    color: AppColors.textMuted,
+                    fontSize: 18,
+                  ),
+                  filled: true,
+                  fillColor: AppColors.surfaceElevated,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(color: AppColors.cardBorder),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(
+                      color: AppColors.primary,
+                      width: 1.5,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+
+              // Fila de 4 botones de ajuste rápido (-1.00, -0.50, +0.50, +1.00)
+              Row(
+                children: [
+                  Expanded(
+                    child: _PriceAdjustButton(
+                      label: '-1.00',
+                      onTap: () => _adjustPrice(-1.0),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _PriceAdjustButton(
+                      label: '-0.50',
+                      onTap: () => _adjustPrice(-0.5),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _PriceAdjustButton(
+                      label: '+0.50',
+                      isPositive: true,
+                      onTap: () => _adjustPrice(0.5),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _PriceAdjustButton(
+                      label: '+1.00',
+                      isPositive: true,
+                      onTap: () => _adjustPrice(1.0),
+                    ),
                   ),
                 ],
               ),
@@ -749,13 +760,17 @@ class _AddProductModalState extends State<AddProductModal> {
                           ),
                         )
                       : const Icon(Icons.check_circle_rounded, size: 20),
-                  label: Text(
-                    _isSaving
-                        ? 'Guardando...'
-                        : 'Guardar en ${_selectedCategory.name}',
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w900,
+                  label: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      _isSaving
+                          ? 'Guardando...'
+                          : 'Guardar en ${_selectedCategory.name}',
+                      maxLines: 1,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
                   ),
                 ),
@@ -800,13 +815,17 @@ class _StepLabel extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 8),
-        Text(
-          title,
-          style: const TextStyle(
-            color: AppColors.textMuted,
-            fontSize: 11.5,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 0.6,
+        Expanded(
+          child: Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              color: AppColors.textMuted,
+              fontSize: 11.5,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.6,
+            ),
           ),
         ),
       ],
@@ -835,7 +854,8 @@ class _PriceAdjustButton extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 13),
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: AppColors.cardBorder),
@@ -844,7 +864,7 @@ class _PriceAdjustButton extends StatelessWidget {
             label,
             style: TextStyle(
               color: color,
-              fontSize: 12,
+              fontSize: 12.5,
               fontWeight: FontWeight.w800,
             ),
           ),

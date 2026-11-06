@@ -552,9 +552,13 @@ class BoletaReceiptModal extends StatelessWidget {
                       ),
                     ),
                     icon: const Icon(Icons.list_alt_rounded, size: 18, color: AppColors.primary),
-                    label: const Text(
-                      'Ver Listado de Boletas Guardadas',
-                      style: TextStyle(fontWeight: FontWeight.w700),
+                    label: const FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        'Ver Listado de Boletas Guardadas',
+                        maxLines: 1,
+                        style: TextStyle(fontWeight: FontWeight.w700),
+                      ),
                     ),
                     onPressed: () {
                       Navigator.pop(context);
@@ -610,99 +614,130 @@ class BoletaReceiptModal extends StatelessWidget {
                           Row(
                             children: [
                               Expanded(
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.success,
-                                    foregroundColor: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
+                                child: SizedBox(
+                                  height: 46,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors.success,
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
                                     ),
-                                  ),
-                                  onPressed: () async {
-                                    await BoletasRepository().saveBoleta(boleta);
-                                    if (context.mounted) {
-                                      Navigator.pop(context);
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          backgroundColor:
-                                              AppColors.surfaceElevated,
-                                          behavior: SnackBarBehavior.floating,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            side: const BorderSide(
-                                                color: AppColors.cardBorder),
-                                          ),
-                                          content: Row(
-                                            children: [
-                                              const Icon(
-                                                  Icons.check_circle_rounded,
-                                                  color: AppColors.success,
-                                                  size: 20),
-                                              const SizedBox(width: 10),
-                                              Expanded(
-                                                child: Text(
-                                                  '${boleta.numero} guardada en el listado de boletas',
-                                                  style: const TextStyle(
-                                                    color: AppColors.textPrimary,
-                                                    fontWeight: FontWeight.w600,
+                                    onPressed: () async {
+                                      await BoletasRepository()
+                                          .saveBoleta(boleta);
+                                      if (context.mounted) {
+                                        Navigator.pop(context);
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            backgroundColor:
+                                                AppColors.surfaceElevated,
+                                            behavior: SnackBarBehavior.floating,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              side: const BorderSide(
+                                                  color: AppColors.cardBorder),
+                                            ),
+                                            content: Row(
+                                              children: [
+                                                const Icon(
+                                                    Icons.check_circle_rounded,
+                                                    color: AppColors.success,
+                                                    size: 20),
+                                                const SizedBox(width: 10),
+                                                Expanded(
+                                                  child: Text(
+                                                    '${boleta.numero} guardada en el listado de boletas',
+                                                    style: const TextStyle(
+                                                      color:
+                                                          AppColors.textPrimary,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
+                                        );
+                                      }
+                                    },
+                                    child: const FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        'Guardar',
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w800,
                                         ),
-                                      );
-                                    }
-                                  },
-                                  child: const Text(
-                                    'Guardar',
-                                    style: TextStyle(fontWeight: FontWeight.w800),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                               const SizedBox(width: 10),
                               Expanded(
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.primary,
-                                    foregroundColor: Colors.black87,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
+                                child: SizedBox(
+                                  height: 46,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors.primary,
+                                      foregroundColor: Colors.black87,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
                                     ),
-                                  ),
-                                  onPressed: () async {
-                                    await SalesRepository().clearAll();
-                                    if (context.mounted) {
-                                      Navigator.pop(context);
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          backgroundColor:
-                                              AppColors.surfaceElevated,
-                                          behavior: SnackBarBehavior.floating,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            side: const BorderSide(
-                                                color: AppColors.cardBorder),
+                                    onPressed: () async {
+                                      await SalesRepository().clearAll();
+                                      if (context.mounted) {
+                                        Navigator.pop(context);
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            backgroundColor:
+                                                AppColors.surfaceElevated,
+                                            behavior: SnackBarBehavior.floating,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              side: const BorderSide(
+                                                  color: AppColors.cardBorder),
+                                            ),
+                                            content: const Row(
+                                              children: [
+                                                Icon(Icons.check_circle_rounded,
+                                                    color: AppColors.success,
+                                                    size: 18),
+                                                SizedBox(width: 8),
+                                                Text(
+                                                    'Pantalla lista para nueva venta'),
+                                              ],
+                                            ),
                                           ),
-                                          content: const Row(
-                                            children: [
-                                              Icon(Icons.check_circle_rounded,
-                                                  color: AppColors.success,
-                                                  size: 18),
-                                              SizedBox(width: 8),
-                                              Text(
-                                                  'Pantalla lista para nueva venta'),
-                                            ],
-                                          ),
+                                        );
+                                      }
+                                    },
+                                    child: const FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        'Limpiar boleta',
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w800,
                                         ),
-                                      );
-                                    }
-                                  },
-                                  child: const Text(
-                                    'Limpiar boleta',
-                                    style: TextStyle(fontWeight: FontWeight.w800),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
