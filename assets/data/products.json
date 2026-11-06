@@ -945,13 +945,6 @@
     "image": null
   },
   {
-    "id": 120,
-    "nombre": "Chilcano Tabernero Clásico Lata 310ml",
-    "categoria": "Bebidas alcohólicas preparadas",
-    "precio": 9.0,
-    "image": null
-  },
-  {
     "id": 121,
     "nombre": "Piscano Acholado Lata 310ml",
     "categoria": "Bebidas alcohólicas preparadas",
@@ -1215,27 +1208,6 @@
     "nombre": "Smirnoff Rojo + Evervess 1.5 L + hielo 1.5 kg",
     "categoria": "Combos",
     "precio": 39.0,
-    "image": null
-  },
-  {
-    "id": 155,
-    "nombre": "Bolsa de Hielo 1 kg",
-    "categoria": "Hielo",
-    "precio": 3.5,
-    "image": null
-  },
-  {
-    "id": 156,
-    "nombre": "Bolsa de Hielo 2 kg",
-    "categoria": "Hielo",
-    "precio": 6.0,
-    "image": null
-  },
-  {
-    "id": 157,
-    "nombre": "Bolsa de Hielo 3 kg",
-    "categoria": "Hielo",
-    "precio": 8.5,
     "image": null
   },
   {

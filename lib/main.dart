@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'core/theme/app_theme.dart';
-import 'presentation/home/home_screen.dart';
+import 'presentation/splash/splash_screen.dart';
 import 'repositories/catalog_repository.dart';
 import 'repositories/sales_repository.dart';
 
@@ -22,7 +22,7 @@ class LicoreriaApp extends StatelessWidget {
       title: 'Licorería POS',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
-      home: const HomeScreen(),
+      home: const SplashScreen(),
     );
   }
 }
