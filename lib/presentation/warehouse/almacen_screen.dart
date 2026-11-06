@@ -6,9 +6,10 @@ import '../../models/product.dart';
 import '../../repositories/catalog_repository.dart';
 import '../categories/widgets/product_card.dart';
 import '../categories/widgets/quick_sale_modal.dart';
+import 'widgets/add_product_modal.dart';
 
 /// Pantalla de Almacén: Muestra la lista completa de todos los productos
-/// dividida y organizada por categorías.
+/// dividida y organizada por categorías, con opción para añadir nuevos productos.
 class AlmacenScreen extends StatefulWidget {
   const AlmacenScreen({super.key});
 
@@ -46,6 +47,48 @@ class _AlmacenScreenState extends State<AlmacenScreen> {
       categoryId: category.id,
     );
     return searched;
+  }
+
+  void _openAddProductModal() async {
+    final addedProduct = await AddProductModal.show(
+      context,
+      initialCategoryId: _selectedCategoryId,
+    );
+
+    if (!mounted || addedProduct == null) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: AppColors.surfaceElevated,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: const BorderSide(color: AppColors.cardBorder),
+        ),
+        content: Row(
+          children: [
+            const Icon(
+              Icons.check_circle_rounded,
+              color: AppColors.success,
+              size: 20,
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                'Producto "${addedProduct.nombre}" añadido a ${addedProduct.categoria}',
+                style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _handleProductTap(
@@ -123,6 +166,16 @@ class _AlmacenScreenState extends State<AlmacenScreen> {
           icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
+        actions: [
+          IconButton(
+            tooltip: 'Añadir nuevo producto',
+            icon: const Icon(
+              Icons.add_box_rounded,
+              color: AppColors.primary,
+            ),
+            onPressed: _openAddProductModal,
+          ),
+        ],
       ),
       body: SafeArea(
         child: ResponsiveLayout(
@@ -161,14 +214,14 @@ class _AlmacenScreenState extends State<AlmacenScreen> {
 
               return CustomScrollView(
                 slivers: [
-                  // 1. RESUMEN Y BUSCADOR DE ALMACÉN
+                  // 1. RESUMEN, BOTÓN AÑADIR PRODUCTO Y BUSCADOR DE ALMACÉN
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.only(top: 16, bottom: 12),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Banner superior del Almacén
+                          // Banner superior del Almacén con botón "+ Añadir Producto"
                           Container(
                             width: double.infinity,
                             padding: const EdgeInsets.symmetric(
@@ -196,7 +249,7 @@ class _AlmacenScreenState extends State<AlmacenScreen> {
                                     size: 26,
                                   ),
                                 ),
-                                const SizedBox(width: 14),
+                                const SizedBox(width: 12),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -206,7 +259,7 @@ class _AlmacenScreenState extends State<AlmacenScreen> {
                                         'Catálogo General del Almacén',
                                         style: TextStyle(
                                           color: AppColors.textPrimary,
-                                          fontSize: 16,
+                                          fontSize: 15.5,
                                           fontWeight: FontWeight.w800,
                                         ),
                                       ),
@@ -215,10 +268,33 @@ class _AlmacenScreenState extends State<AlmacenScreen> {
                                         '$totalMatchingProducts ${totalMatchingProducts == 1 ? "producto" : "productos"} en ${categorySections.length} ${categorySections.length == 1 ? "categoría" : "categorías"}',
                                         style: const TextStyle(
                                           color: AppColors.textSecondary,
-                                          fontSize: 12.5,
+                                          fontSize: 12,
                                         ),
                                       ),
                                     ],
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                ElevatedButton.icon(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.primary,
+                                    foregroundColor: Colors.black,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 14,
+                                      vertical: 11,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  onPressed: _openAddProductModal,
+                                  icon: const Icon(Icons.add_rounded, size: 19),
+                                  label: const Text(
+                                    'Añadir Producto',
+                                    style: TextStyle(
+                                      fontSize: 12.5,
+                                      fontWeight: FontWeight.w900,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -292,46 +368,41 @@ class _AlmacenScreenState extends State<AlmacenScreen> {
                           ),
                           const SizedBox(height: 12),
 
-                          // Filtro rápido horizontal de categorías
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                _CategoryFilterChip(
-                                  label: 'Todas (${allCategories.length})',
-                                  icon: Icons.grid_view_rounded,
-                                  color: AppColors.primary,
-                                  isSelected: _selectedCategoryId == null,
+                          // Filtro de todas las categorías visibles
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: [
+                              _CategoryFilterChip(
+                                label: 'Todas (${allCategories.length})',
+                                icon: Icons.grid_view_rounded,
+                                color: AppColors.primary,
+                                isSelected: _selectedCategoryId == null,
+                                onTap: () {
+                                  setState(() {
+                                    _selectedCategoryId = null;
+                                  });
+                                },
+                              ),
+                              ...allCategories.map((cat) {
+                                final color =
+                                    cat.accentColor ?? AppColors.primary;
+                                final isSelected =
+                                    _selectedCategoryId == cat.id;
+                                return _CategoryFilterChip(
+                                  label: cat.name,
+                                  icon: cat.icon,
+                                  color: color,
+                                  isSelected: isSelected,
                                   onTap: () {
                                     setState(() {
-                                      _selectedCategoryId = null;
+                                      _selectedCategoryId =
+                                          isSelected ? null : cat.id;
                                     });
                                   },
-                                ),
-                                const SizedBox(width: 8),
-                                ...allCategories.map((cat) {
-                                  final color =
-                                      cat.accentColor ?? AppColors.primary;
-                                  final isSelected =
-                                      _selectedCategoryId == cat.id;
-                                  return Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: _CategoryFilterChip(
-                                      label: cat.name,
-                                      icon: cat.icon,
-                                      color: color,
-                                      isSelected: isSelected,
-                                      onTap: () {
-                                        setState(() {
-                                          _selectedCategoryId =
-                                              isSelected ? null : cat.id;
-                                        });
-                                      },
-                                    ),
-                                  );
-                                }),
-                              ],
-                            ),
+                                );
+                              }),
+                            ],
                           ),
                         ],
                       ),
@@ -581,4 +652,3 @@ class _CategoryFilterChip extends StatelessWidget {
     );
   }
 }
-

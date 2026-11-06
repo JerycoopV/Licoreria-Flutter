@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/utils/image_picker_helper.dart';
 import '../../../models/product.dart';
 
 /// Tarjeta moderna para mostrar cada producto en la grilla del catálogo.
@@ -20,6 +21,8 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasImage = product.image != null && product.image!.trim().isNotEmpty;
+    final dataUrlBytes =
+        hasImage ? ImagePickerHelper.decodeDataUrl(product.image) : null;
 
     return Material(
       color: Colors.transparent,
@@ -61,14 +64,21 @@ class ProductCard extends StatelessWidget {
                         ),
                       ),
                       clipBehavior: Clip.antiAlias,
-                      child: hasImage
-                          ? Image.asset(
-                              product.image!,
+                      child: dataUrlBytes != null
+                          ? Image.memory(
+                              dataUrlBytes,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) =>
                                   _buildFallbackContainer(),
                             )
-                          : _buildFallbackContainer(),
+                          : hasImage
+                              ? Image.asset(
+                                  product.image!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      _buildFallbackContainer(),
+                                )
+                              : _buildFallbackContainer(),
                     ),
                     // Badge de categoría del producto
                     Positioned(

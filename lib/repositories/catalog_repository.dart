@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/category.dart';
 import '../models/product.dart';
 
@@ -159,18 +160,23 @@ class CatalogRepository extends ChangeNotifier {
 
   CatalogRepository._internal();
 
+  static const String _customProductsStorageKey =
+      'licoreria_custom_products_v1';
+
   final List<Product> _products = [];
+  final List<Product> _customProducts = [];
   bool _isLoading = false;
   bool _isLoaded = false;
   String? _errorMessage;
 
   List<Product> get products => List.unmodifiable(_products);
+  List<Product> get customProducts => List.unmodifiable(_customProducts);
   bool get isLoading => _isLoading;
   bool get isLoaded => _isLoaded;
   String? get errorMessage => _errorMessage;
   bool get hasError => _errorMessage != null;
 
-  /// Carga los productos desde assets/data/products.json
+  /// Carga los productos desde assets/data/products.json y suma los productos personalizados locales
   Future<List<Product>> loadProducts({bool forceRefresh = false}) async {
     if (_isLoaded && !forceRefresh) {
       return _products;
@@ -191,6 +197,19 @@ class CatalogRepository extends ChangeNotifier {
           _products.add(Product.fromMap(item));
         }
       }
+
+      // Cargar productos personalizados guardados en memoria local
+      await _loadCustomProductsFromStorage();
+      for (final custom in _customProducts) {
+        final existingIdx = _products
+            .indexWhere((p) => p.id.toString() == custom.id.toString());
+        if (existingIdx >= 0) {
+          _products[existingIdx] = custom;
+        } else {
+          _products.add(custom);
+        }
+      }
+
       _isLoaded = true;
       _errorMessage = null;
     } catch (e) {
@@ -202,6 +221,45 @@ class CatalogRepository extends ChangeNotifier {
     }
 
     return _products;
+  }
+
+  Future<void> _loadCustomProductsFromStorage() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final rawJson = prefs.getString(_customProductsStorageKey);
+      _customProducts.clear();
+      if (rawJson != null && rawJson.isNotEmpty) {
+        final List<dynamic> decoded = json.decode(rawJson) as List<dynamic>;
+        for (final item in decoded) {
+          if (item is Map<String, dynamic>) {
+            _customProducts.add(Product.fromMap(item));
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('Error leyendo productos personalizados: $e');
+    }
+  }
+
+  Future<bool> _saveCustomProductsToStorage() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final encoded =
+          json.encode(_customProducts.map((p) => p.toMap()).toList());
+      return await prefs.setString(_customProductsStorageKey, encoded);
+    } catch (e) {
+      debugPrint('Error guardando productos personalizados: $e');
+      return false;
+    }
+  }
+
+  /// Añade un nuevo producto personalizado al almacén y lo persiste localmente.
+  Future<bool> addCustomProduct(Product product) async {
+    _customProducts.add(product);
+    _products.add(product);
+    final saved = await _saveCustomProductsToStorage();
+    notifyListeners();
+    return saved;
   }
 
   /// Retorna los productos de una categoría (filtrando por nombre o ID)
