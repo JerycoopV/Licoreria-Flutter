@@ -103,7 +103,10 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
             label: 'Ir al Inicio',
             textColor: AppColors.primary,
             onPressed: () {
-              Navigator.popUntil(context, (route) => route.isFirst);
+              Navigator.popUntil(
+                context,
+                (route) => route.settings.name == '/boleta' || route.isFirst,
+              );
             },
           ),
         ),

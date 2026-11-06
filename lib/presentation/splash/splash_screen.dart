@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
-import '../home/home_screen.dart';
+import '../menu/main_menu_screen.dart';
 
 /// Pantalla de carga inicial (Splash Screen) inspirada en el estilo limpio de Yape,
 /// combinando el nuevo ícono azul de la tienda con la paleta oscura y dorada de la app.
@@ -51,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen>
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 450),
-        pageBuilder: (_, _, _) => const HomeScreen(),
+        pageBuilder: (_, _, _) => const MainMenuScreen(),
         transitionsBuilder: (_, animation, _, child) {
           return FadeTransition(
             opacity: animation,

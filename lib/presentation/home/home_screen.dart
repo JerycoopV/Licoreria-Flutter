@@ -22,6 +22,13 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: Navigator.canPop(context)
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+                tooltip: 'Volver al menú',
+                onPressed: () => Navigator.pop(context),
+              )
+            : null,
         title: const FittedBox(
           fit: BoxFit.scaleDown,
           child: Row(
