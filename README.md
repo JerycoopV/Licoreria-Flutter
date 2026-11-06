@@ -155,5 +155,5 @@ lib/
 ---
 
 <div align="center">
-  Desarrollado con ❤️ usando <b>Flutter</b> — <b>Licorería POS</b>
+  Desarrollado por <b>Jerycoop Ernesto Vidal Solano</b> — <b>Licorería POS</b>
 </div>
