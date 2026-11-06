@@ -57,8 +57,13 @@ class ProductCard extends StatelessWidget {
                   children: [
                     Container(
                       width: double.infinity,
+                      height: double.infinity,
+                      padding:
+                          hasImage ? const EdgeInsets.all(6) : EdgeInsets.zero,
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceElevated.withValues(alpha: 0.6),
+                        color: hasImage
+                            ? Colors.white
+                            : AppColors.surfaceElevated.withValues(alpha: 0.6),
                         borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(15),
                         ),
@@ -67,14 +72,14 @@ class ProductCard extends StatelessWidget {
                       child: dataUrlBytes != null
                           ? Image.memory(
                               dataUrlBytes,
-                              fit: BoxFit.cover,
+                              fit: BoxFit.contain,
                               errorBuilder: (context, error, stackTrace) =>
                                   _buildFallbackContainer(),
                             )
                           : hasImage
                               ? Image.asset(
                                   product.image!,
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.contain,
                                   errorBuilder: (context, error, stackTrace) =>
                                       _buildFallbackContainer(),
                                 )
