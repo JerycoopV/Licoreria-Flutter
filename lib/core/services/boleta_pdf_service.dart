@@ -44,7 +44,7 @@ class BoletaPdfService {
               children: [
                 // Encabezado
                 pw.Text(
-                  'LICORERÍA POS',
+                  'LICORERÍA FEST',
                   style: pw.TextStyle(
                     fontSize: 14,
                     fontWeight: pw.FontWeight.bold,
@@ -266,7 +266,7 @@ class BoletaPdfService {
                 ),
                 pw.SizedBox(height: 2),
                 pw.Text(
-                  'Documento comercial no fiscal emitido por Licorería POS',
+                  'Documento comercial no fiscal emitido por Licorería Fest',
                   textAlign: pw.TextAlign.center,
                   style: const pw.TextStyle(fontSize: 5.5, color: PdfColors.grey500),
                 ),

@@ -28,7 +28,7 @@ class MainMenuScreen extends StatelessWidget {
             children: [
               Icon(Icons.liquor_rounded, color: AppColors.primary, size: 22),
               SizedBox(width: 8),
-              Text('LICORERÍA POS'),
+              Text('LICORERÍA FEST'),
             ],
           ),
         ),

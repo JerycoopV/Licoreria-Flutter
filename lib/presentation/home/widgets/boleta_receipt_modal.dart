@@ -142,7 +142,7 @@ class BoletaReceiptModal extends StatelessWidget {
                         ),
                         const SizedBox(height: 6),
                         const Text(
-                          'LICORERÍA POS',
+                          'LICORERÍA FEST',
                           style: TextStyle(
                             color: AppColors.textPrimary,
                             fontSize: 18,

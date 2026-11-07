@@ -1,6 +1,6 @@
 {
-    "name": "licoreria_pos",
-    "short_name": "licoreria_pos",
+    "name": "Licoreria Fest",
+    "short_name": "Licoreria Fest",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -1,7 +1,7 @@
 <div align="center">
-  <img src="assets/images/icon.png" alt="Licorería POS Logo" width="110" />
+  <img src="assets/images/icon.png" alt="Licorería Fest Logo" width="110" />
 
-  # 🍾 Licorería POS — Sistema de Punto de Venta & Almacén
+  # 🍾 Licorería Fest — Sistema de Punto de Venta & Almacén
 
   **Aplicación multiplataforma de Punto de Venta (POS) y gestión de catálogo desarrollada en Flutter para licorerías y minimarkets.**
 
@@ -16,7 +16,7 @@
 
 ## 📋 Descripción General
 
-**Licorería POS** es una solución ágil, moderna y **100% funcional sin conexión a internet (Offline-First)** pensada para agilizar la atención en mostrador, controlar los precios del almacén y llevar el cuadre exacto de ventas diarias diferenciando entre **Efectivo**, **Yape** y **Tarjeta de Crédito**.
+**Licorería Fest** es una solución ágil, moderna y **100% funcional sin conexión a internet (Offline-First)** pensada para agilizar la atención en mostrador, controlar los precios del almacén y llevar el cuadre exacto de ventas diarias diferenciando entre **Efectivo**, **Yape** y **Tarjeta de Crédito**.
 
 Al iniciar la aplicación tras su pantalla de carga animada, el sistema presenta **2 módulos principales**:
 1. 📦 **Almacén**: Visualización completa del inventario organizado por categorías, buscador inteligente en tiempo real y creación de nuevos productos con fotografía.
@@ -155,5 +155,5 @@ lib/
 ---
 
 <div align="center">
-  Desarrollado por <b>Jerycoop Ernesto Vidal Solano</b> — <b>Licorería POS</b>
+  Desarrollado por <b>Jerycoop Ernesto Vidal Solano</b> — <b>Licorería Fest</b>
 </div>

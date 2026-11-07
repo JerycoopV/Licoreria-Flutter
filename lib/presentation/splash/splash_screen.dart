@@ -176,7 +176,7 @@ class _SplashScreenState extends State<SplashScreen>
                                   borderRadius: BorderRadius.circular(6),
                                 ),
                                 child: const Text(
-                                  'POS',
+                                  'FEST',
                                   style: TextStyle(
                                     color: Colors.black87,
                                     fontSize: 11,

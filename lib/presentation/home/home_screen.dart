@@ -36,7 +36,7 @@ class HomeScreen extends StatelessWidget {
             children: [
               Icon(Icons.liquor_rounded, color: AppColors.primary, size: 22),
               SizedBox(width: 8),
-              Text('LICORERÍA POS'),
+              Text('LICORERÍA FEST'),
             ],
           ),
         ),
@@ -332,7 +332,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             Icon(Icons.liquor_rounded, color: AppColors.primary),
             SizedBox(width: 8),
-            Text('Licorería POS', style: TextStyle(fontSize: 18)),
+            Text('Licorería Fest', style: TextStyle(fontSize: 18)),
           ],
         ),
         content: const Text(

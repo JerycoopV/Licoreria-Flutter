@@ -19,7 +19,7 @@ class LicoreriaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Licorería POS',
+      title: 'Licoreria Fest',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
       home: const SplashScreen(),
