@@ -6,22 +6,25 @@ import '../../../models/category.dart';
 import '../../../models/product.dart';
 import '../../../repositories/catalog_repository.dart';
 
-/// Modal interactivo en el Almacén para añadir un nuevo producto:
+/// Modal interactivo en el Almacén para añadir o editar un producto:
 /// 1. Escoger la categoría (y subcategoría si aplica)
 /// 2. Escribir el nombre del producto
 /// 3. Escoger el precio
-/// 4. Subir la imagen del producto
+/// 4. Subir o cambiar la imagen del producto
 class AddProductModal extends StatefulWidget {
   final String? initialCategoryId;
+  final Product? productToEdit;
 
   const AddProductModal({
     super.key,
     this.initialCategoryId,
+    this.productToEdit,
   });
 
   static Future<Product?> show(
     BuildContext context, {
     String? initialCategoryId,
+    Product? productToEdit,
   }) {
     return showModalBottomSheet<Product>(
       context: context,
@@ -29,6 +32,7 @@ class AddProductModal extends StatefulWidget {
       backgroundColor: Colors.transparent,
       builder: (ctx) => AddProductModal(
         initialCategoryId: initialCategoryId,
+        productToEdit: productToEdit,
       ),
     );
   }
@@ -48,16 +52,45 @@ class _AddProductModalState extends State<AddProductModal> {
   bool _isSaving = false;
   bool _isPickingImage = false;
 
+  bool get _isEditing => widget.productToEdit != null;
+
   @override
   void initState() {
     super.initState();
     final categories = CatalogRepository.categories;
-    _selectedCategory = categories.firstWhere(
-      (c) => c.id == widget.initialCategoryId,
-      orElse: () => categories.first,
-    );
-    if (_selectedCategory.hasSubcategories) {
-      _selectedSubcategoryId = _selectedCategory.subcategories.first.id;
+    final editingProduct = widget.productToEdit;
+
+    if (editingProduct != null) {
+      _nameController.text = editingProduct.nombre;
+      _priceController.text = editingProduct.precio.toStringAsFixed(2);
+      _uploadedImageDataUrl = editingProduct.image;
+
+      _selectedCategory =
+          CatalogRepository.getCategoryById(editingProduct.categoria) ??
+              categories.first;
+
+      if (_selectedCategory.hasSubcategories) {
+        final rawSub = (editingProduct.subcategoryId ?? '').toLowerCase().trim();
+        final matchedSub = _selectedCategory.subcategories.where((s) {
+          final sId = s.id.toLowerCase();
+          final sName = s.name.toLowerCase();
+          return sId == rawSub ||
+              sName == rawSub ||
+              (rawSub.contains('lata') && sId.contains('lata')) ||
+              (rawSub.contains('botella') && sId.contains('botella'));
+        }).firstOrNull;
+        _selectedSubcategoryId =
+            matchedSub?.id ?? _selectedCategory.subcategories.first.id;
+      }
+    } else {
+      _selectedCategory = categories.firstWhere(
+        (c) => c.id == widget.initialCategoryId,
+        orElse: () => categories.first,
+      );
+      _priceController.text = '0.50';
+      if (_selectedCategory.hasSubcategories) {
+        _selectedSubcategoryId = _selectedCategory.subcategories.first.id;
+      }
     }
   }
 
@@ -71,14 +104,6 @@ class _AddProductModalState extends State<AddProductModal> {
   double get _currentPrice {
     final clean = _priceController.text.replaceAll(',', '.').trim();
     return double.tryParse(clean) ?? 0.0;
-  }
-
-  void _adjustPrice(double delta) {
-    final next = (_currentPrice + delta).clamp(0.0, 9999.0);
-    setState(() {
-      _priceController.text = next.toStringAsFixed(2);
-      _errorMessage = null;
-    });
   }
 
   void _setPresetPrice(double price) {
@@ -123,9 +148,10 @@ class _AddProductModalState extends State<AddProductModal> {
       return;
     }
 
-    if (price <= 0) {
+    if (price < 0.50) {
       setState(() {
-        _errorMessage = 'Por favor ingresa o escoge un precio mayor a S/. 0.00.';
+        _errorMessage =
+            'El precio mínimo permitido es desde S/. 0.50 hacia arriba.';
       });
       return;
     }
@@ -135,21 +161,28 @@ class _AddProductModalState extends State<AddProductModal> {
       _errorMessage = null;
     });
 
-    final newProduct = Product(
-      id: 'custom_${DateTime.now().millisecondsSinceEpoch}',
+    final savedProduct = Product(
+      id: _isEditing
+          ? widget.productToEdit!.id
+          : 'custom_${DateTime.now().millisecondsSinceEpoch}',
       nombre: name,
       categoria: _selectedCategory.name,
       precio: double.parse(price.toStringAsFixed(2)),
       image: _uploadedImageDataUrl,
       subcategoryId:
           _selectedCategory.hasSubcategories ? _selectedSubcategoryId : null,
-      isAvailable: true,
+      description: _isEditing ? widget.productToEdit!.description : null,
+      isAvailable: _isEditing ? widget.productToEdit!.isAvailable : true,
     );
 
-    await CatalogRepository().addCustomProduct(newProduct);
+    if (_isEditing) {
+      await CatalogRepository().updateProduct(savedProduct);
+    } else {
+      await CatalogRepository().addCustomProduct(savedProduct);
+    }
 
     if (!mounted) return;
-    Navigator.pop(context, newProduct);
+    Navigator.pop(context, savedProduct);
   }
 
   @override
@@ -157,8 +190,10 @@ class _AddProductModalState extends State<AddProductModal> {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     final categories = CatalogRepository.categories;
     final accentColor = _selectedCategory.accentColor ?? AppColors.primary;
+    final hasAnyImage =
+        _uploadedImageDataUrl != null && _uploadedImageDataUrl!.trim().isNotEmpty;
     final previewBytes =
-        ImagePickerHelper.decodeDataUrl(_uploadedImageDataUrl);
+        hasAnyImage ? ImagePickerHelper.decodeDataUrl(_uploadedImageDataUrl) : null;
 
     return Container(
       margin: const EdgeInsets.only(top: 40),
@@ -201,29 +236,35 @@ class _AddProductModalState extends State<AddProductModal> {
                       color: AppColors.primary.withValues(alpha: 0.16),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(
-                      Icons.add_box_rounded,
+                    child: Icon(
+                      _isEditing
+                          ? Icons.edit_note_rounded
+                          : Icons.add_box_rounded,
                       color: AppColors.primary,
                       size: 24,
                     ),
                   ),
                   const SizedBox(width: 12),
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Añadir Nuevo Producto',
-                          style: TextStyle(
+                          _isEditing
+                              ? 'Editar Producto'
+                              : 'Añadir Nuevo Producto',
+                          style: const TextStyle(
                             color: AppColors.textPrimary,
                             fontSize: 18,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
-                        SizedBox(height: 2),
+                        const SizedBox(height: 2),
                         Text(
-                          'Se guardará directamente en tu Almacén',
-                          style: TextStyle(
+                          _isEditing
+                              ? 'Modifica categoría, nombre, precio o imagen'
+                              : 'Se guardará directamente en tu Almacén',
+                          style: const TextStyle(
                             color: AppColors.textSecondary,
                             fontSize: 12.5,
                           ),
@@ -390,9 +431,7 @@ class _AddProductModalState extends State<AddProductModal> {
                 controller: _nameController,
                 textCapitalization: TextCapitalization.words,
                 onChanged: (_) {
-                  if (_errorMessage != null) {
-                    setState(() => _errorMessage = null);
-                  }
+                  setState(() => _errorMessage = null);
                 },
                 style: const TextStyle(
                   color: AppColors.textPrimary,
@@ -450,9 +489,7 @@ class _AddProductModalState extends State<AddProductModal> {
                   ),
                 ],
                 onChanged: (_) {
-                  if (_errorMessage != null) {
-                    setState(() => _errorMessage = null);
-                  }
+                  setState(() => _errorMessage = null);
                 },
                 style: const TextStyle(
                   color: AppColors.primary,
@@ -475,7 +512,7 @@ class _AddProductModalState extends State<AddProductModal> {
                     minWidth: 0,
                     minHeight: 0,
                   ),
-                  hintText: '0.00',
+                  hintText: '0.50',
                   hintStyle: const TextStyle(
                     color: AppColors.textMuted,
                     fontSize: 18,
@@ -499,59 +536,49 @@ class _AddProductModalState extends State<AddProductModal> {
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
-
-              // Fila de 4 botones de ajuste rápido (-1.00, -0.50, +0.50, +1.00)
-              Row(
-                children: [
-                  Expanded(
-                    child: _PriceAdjustButton(
-                      label: '-1.00',
-                      onTap: () => _adjustPrice(-1.0),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _PriceAdjustButton(
-                      label: '-0.50',
-                      onTap: () => _adjustPrice(-0.5),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _PriceAdjustButton(
-                      label: '+0.50',
-                      isPositive: true,
-                      onTap: () => _adjustPrice(0.5),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _PriceAdjustButton(
-                      label: '+1.00',
-                      isPositive: true,
-                      onTap: () => _adjustPrice(1.0),
-                    ),
-                  ),
-                ],
-              ),
               const SizedBox(height: 10),
 
-              // Botones rápidos de precios frecuentes
+              // Botones rápidos de precios desde S/. 0.50 hacia arriba (sin - ni +)
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: [2.0, 5.0, 8.0, 10.0, 15.0, 20.0, 28.0, 35.0]
-                    .map((preset) {
+                children: [
+                  0.50,
+                  1.00,
+                  1.50,
+                  2.00,
+                  2.50,
+                  3.00,
+                  5.00,
+                  8.00,
+                  10.00,
+                  15.00,
+                  20.00,
+                  28.00,
+                  35.00,
+                ].map((preset) {
+                  final isSelectedPrice =
+                      (_currentPrice - preset).abs() < 0.001;
                   return ActionChip(
-                    backgroundColor: AppColors.surfaceElevated,
-                    side: const BorderSide(color: AppColors.cardBorder),
+                    backgroundColor: isSelectedPrice
+                        ? AppColors.primary.withValues(alpha: 0.22)
+                        : AppColors.surfaceElevated,
+                    side: BorderSide(
+                      color: isSelectedPrice
+                          ? AppColors.primary
+                          : AppColors.cardBorder,
+                      width: isSelectedPrice ? 1.5 : 1.0,
+                    ),
                     label: Text(
                       'S/. ${preset.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        color: AppColors.textSecondary,
+                      style: TextStyle(
+                        color: isSelectedPrice
+                            ? AppColors.primary
+                            : AppColors.textSecondary,
                         fontSize: 12,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: isSelectedPrice
+                            ? FontWeight.w800
+                            : FontWeight.w700,
                       ),
                     ),
                     onPressed: () => _setPresetPrice(preset),
@@ -564,9 +591,11 @@ class _AddProductModalState extends State<AddProductModal> {
               // ============================================================
               // PASO 4: SUBIR LA IMAGEN DEL PRODUCTO
               // ============================================================
-              const _StepLabel(
+              _StepLabel(
                 stepNumber: '4',
-                title: 'SUBE LA IMAGEN DEL PRODUCTO (OPCIONAL)',
+                title: _isEditing
+                    ? 'IMAGEN DEL PRODUCTO (TOCA PARA CAMBIAR)'
+                    : 'SUBE LA IMAGEN DEL PRODUCTO (OPCIONAL)',
               ),
               const SizedBox(height: 8),
               InkWell(
@@ -579,23 +608,38 @@ class _AddProductModalState extends State<AddProductModal> {
                     color: AppColors.surfaceElevated,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: previewBytes != null
+                      color: hasAnyImage
                           ? AppColors.success.withValues(alpha: 0.6)
                           : AppColors.cardBorder,
                       width: 1.2,
                     ),
                   ),
-                  child: previewBytes != null
+                  child: hasAnyImage
                       ? Row(
                           children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.memory(
-                                previewBytes,
-                                width: 68,
-                                height: 68,
-                                fit: BoxFit.cover,
+                            Container(
+                              width: 68,
+                              height: 68,
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
                               ),
+                              clipBehavior: Clip.antiAlias,
+                              child: previewBytes != null
+                                  ? Image.memory(
+                                      previewBytes,
+                                      fit: BoxFit.contain,
+                                    )
+                                  : Image.asset(
+                                      _uploadedImageDataUrl!,
+                                      fit: BoxFit.contain,
+                                      errorBuilder: (_, __, ___) => Icon(
+                                        _selectedCategory.icon,
+                                        color: accentColor,
+                                        size: 32,
+                                      ),
+                                    ),
                             ),
                             const SizedBox(width: 14),
                             Expanded(
@@ -611,7 +655,7 @@ class _AddProductModalState extends State<AddProductModal> {
                                       ),
                                       SizedBox(width: 6),
                                       Text(
-                                        'Imagen cargada',
+                                        'Imagen activa',
                                         style: TextStyle(
                                           color: AppColors.textPrimary,
                                           fontSize: 13.5,
@@ -622,7 +666,7 @@ class _AddProductModalState extends State<AddProductModal> {
                                   ),
                                   const SizedBox(height: 4),
                                   const Text(
-                                    'Toca para cambiar por otra imagen',
+                                    'Toca para subir otra foto y reemplazarla',
                                     style: TextStyle(
                                       color: AppColors.textSecondary,
                                       fontSize: 12,
@@ -740,11 +784,16 @@ class _AddProductModalState extends State<AddProductModal> {
               // BOTÓN GUARDAR PRODUCTO
               SizedBox(
                 width: double.infinity,
-                height: 52,
+                height: 50,
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    minimumSize: const Size.fromHeight(50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
@@ -765,11 +814,14 @@ class _AddProductModalState extends State<AddProductModal> {
                     child: Text(
                       _isSaving
                           ? 'Guardando...'
-                          : 'Guardar en ${_selectedCategory.name}',
+                          : (_isEditing
+                              ? 'Guardar Cambios en ${_selectedCategory.name}'
+                              : 'Guardar en ${_selectedCategory.name}'),
                       maxLines: 1,
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w900,
+                        height: 1.1,
                       ),
                     ),
                   ),
@@ -829,47 +881,6 @@ class _StepLabel extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _PriceAdjustButton extends StatelessWidget {
-  final String label;
-  final bool isPositive;
-  final VoidCallback onTap;
-
-  const _PriceAdjustButton({
-    required this.label,
-    this.isPositive = false,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color = isPositive ? AppColors.primary : AppColors.textSecondary;
-    return Material(
-      color: AppColors.surfaceElevated,
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.cardBorder),
-          ),
-          child: Text(
-            label,
-            style: TextStyle(
-              color: color,
-              fontSize: 12.5,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

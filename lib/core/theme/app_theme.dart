@@ -45,7 +45,7 @@ class AppTheme {
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.black,
           elevation: 4,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),

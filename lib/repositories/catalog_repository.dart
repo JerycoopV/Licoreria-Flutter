@@ -262,6 +262,31 @@ class CatalogRepository extends ChangeNotifier {
     return saved;
   }
 
+  /// Actualiza un producto existente del almacén (categoría, nombre, precio o imagen)
+  /// y guarda los cambios en almacenamiento local para que persistan.
+  Future<bool> updateProduct(Product updatedProduct) async {
+    final targetId = updatedProduct.id.toString();
+
+    final prodIdx = _products.indexWhere((p) => p.id.toString() == targetId);
+    if (prodIdx >= 0) {
+      _products[prodIdx] = updatedProduct;
+    } else {
+      _products.add(updatedProduct);
+    }
+
+    final customIdx =
+        _customProducts.indexWhere((p) => p.id.toString() == targetId);
+    if (customIdx >= 0) {
+      _customProducts[customIdx] = updatedProduct;
+    } else {
+      _customProducts.add(updatedProduct);
+    }
+
+    final saved = await _saveCustomProductsToStorage();
+    notifyListeners();
+    return saved;
+  }
+
   /// Retorna los productos de una categoría (filtrando por nombre o ID)
   /// y opcionalmente por subcategoría.
   List<Product> getProductsByCategory(String categoryIdentifier,

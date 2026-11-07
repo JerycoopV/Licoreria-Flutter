@@ -5,7 +5,6 @@ import '../../models/category.dart';
 import '../../models/product.dart';
 import '../../repositories/catalog_repository.dart';
 import '../categories/widgets/product_card.dart';
-import '../categories/widgets/quick_sale_modal.dart';
 import 'widgets/add_product_modal.dart';
 
 /// Pantalla de Almacén: Muestra la lista completa de todos los productos
@@ -91,53 +90,46 @@ class _AlmacenScreenState extends State<AlmacenScreen> {
     );
   }
 
-  void _handleProductTap(
-    Product product,
-    Color accentColor,
-    IconData fallbackIcon,
-  ) async {
-    final saleCompleted = await QuickSaleModal.show(
+  void _handleProductTap(Product product) async {
+    final editedProduct = await AddProductModal.show(
       context,
-      product: product,
-      accentColor: accentColor,
-      fallbackIcon: fallbackIcon,
+      productToEdit: product,
     );
 
-    if (!mounted) return;
-    if (saleCompleted == true) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: AppColors.surfaceElevated,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: const BorderSide(color: AppColors.cardBorder),
-          ),
-          content: Row(
-            children: [
-              const Icon(
-                Icons.check_circle_rounded,
-                color: AppColors.success,
-                size: 20,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  'Venta de "${product.name}" registrada en Boleta',
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
+    if (!mounted || editedProduct == null) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: AppColors.surfaceElevated,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: const BorderSide(color: AppColors.cardBorder),
         ),
-      );
-    }
+        content: Row(
+          children: [
+            const Icon(
+              Icons.check_circle_rounded,
+              color: AppColors.success,
+              size: 20,
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                'Producto "${editedProduct.nombre}" actualizado en ${editedProduct.categoria}',
+                style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -282,11 +274,17 @@ class _AlmacenScreenState extends State<AlmacenScreen> {
                                 ),
                                 const SizedBox(height: 12),
                                 SizedBox(
-                                  height: 44,
+                                  width: double.infinity,
+                                  height: 46,
                                   child: ElevatedButton.icon(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: AppColors.primary,
                                       foregroundColor: Colors.black,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 8,
+                                      ),
+                                      minimumSize: const Size.fromHeight(46),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),
@@ -294,11 +292,16 @@ class _AlmacenScreenState extends State<AlmacenScreen> {
                                     onPressed: _openAddProductModal,
                                     icon:
                                         const Icon(Icons.add_rounded, size: 20),
-                                    label: const Text(
-                                      'Añadir Producto',
-                                      style: TextStyle(
-                                        fontSize: 13.5,
-                                        fontWeight: FontWeight.w900,
+                                    label: const FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        'Añadir Producto',
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w900,
+                                          height: 1.1,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -495,11 +498,8 @@ class _AlmacenScreenState extends State<AlmacenScreen> {
                                 product: product,
                                 accentColor: accentColor,
                                 fallbackIcon: section.category.icon,
-                                onTap: () => _handleProductTap(
-                                  product,
-                                  accentColor,
-                                  section.category.icon,
-                                ),
+                                actionIcon: Icons.edit_rounded,
+                                onTap: () => _handleProductTap(product),
                               );
                             },
                             childCount: section.products.length,

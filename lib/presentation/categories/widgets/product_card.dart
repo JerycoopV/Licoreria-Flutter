@@ -9,6 +9,7 @@ class ProductCard extends StatelessWidget {
   final Color accentColor;
   final IconData fallbackIcon;
   final VoidCallback onTap;
+  final IconData actionIcon;
 
   const ProductCard({
     super.key,
@@ -16,6 +17,7 @@ class ProductCard extends StatelessWidget {
     required this.accentColor,
     required this.fallbackIcon,
     required this.onTap,
+    this.actionIcon = Icons.add_rounded,
   });
 
   @override
@@ -214,7 +216,7 @@ class ProductCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Icon(
-                              Icons.add_rounded,
+                              actionIcon,
                               size: 16,
                               color: accentColor,
                             ),
