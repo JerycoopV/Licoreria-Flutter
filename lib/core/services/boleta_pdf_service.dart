@@ -236,6 +236,37 @@ class BoletaPdfService {
                     ),
                   ),
 
+                // Descuentos aplicados
+                ...boleta.descuentos.map((desc) {
+                  return pw.Padding(
+                    padding: const pw.EdgeInsets.only(bottom: 2),
+                    child: pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Expanded(
+                          child: pw.Text(
+                            'Descuento (${desc.nombre}) [${desc.metodoPago}]:',
+                            style: pw.TextStyle(
+                              fontSize: 7.5,
+                              fontWeight: pw.FontWeight.bold,
+                              color: PdfColors.grey800,
+                            ),
+                          ),
+                        ),
+                        pw.SizedBox(width: 4),
+                        pw.Text(
+                          '- S/. ${desc.monto.toStringAsFixed(2)}',
+                          style: pw.TextStyle(
+                            fontSize: 7.5,
+                            fontWeight: pw.FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+
                 pw.SizedBox(height: 4),
                 pw.Container(
                   padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 6),

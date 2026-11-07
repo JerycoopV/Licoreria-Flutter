@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../models/boleta.dart';
 import '../models/sale.dart';
 
 /// Repositorio y gestor reactivo para el historial de ventas.
 /// Almacena 100% offline todas las operaciones de venta localmente usando SharedPreferences/JSON.
 class SalesRepository extends ChangeNotifier {
   static const String _storageKey = 'licoreria_sales_history_v1';
+  static const String _discountsStorageKey = 'licoreria_active_discounts_v1';
 
   // Patrón Singleton para acceso global y desacoplado
   static final SalesRepository _instance = SalesRepository._internal();
@@ -17,9 +19,11 @@ class SalesRepository extends ChangeNotifier {
   }
 
   final List<Sale> _sales = [];
+  final List<BoletaDescuento> _discounts = [];
   bool _isLoaded = false;
 
   List<Sale> get sales => List.unmodifiable(_sales);
+  List<BoletaDescuento> get discounts => List.unmodifiable(_discounts);
   bool get isLoaded => _isLoaded;
 
   /// Carga las ventas almacenadas localmente en el dispositivo.
@@ -32,7 +36,9 @@ class SalesRepository extends ChangeNotifier {
       if (kIsWeb) {
         // En navegador siempre empieza desde 0 con el historial vacío al iniciar la aplicación
         _sales.clear();
+        _discounts.clear();
         await prefs.remove(_storageKey);
+        await prefs.remove(_discountsStorageKey);
         _isLoaded = true;
         notifyListeners();
         return _sales;
@@ -62,6 +68,20 @@ class SalesRepository extends ChangeNotifier {
         // Primera ejecución o caché borrado: el historial inicia completamente vacío
         _sales.clear();
       }
+
+      // Cargar descuentos activos de la boleta actual
+      final discountsJson = prefs.getString(_discountsStorageKey);
+      _discounts.clear();
+      if (discountsJson != null && discountsJson.isNotEmpty) {
+        final List<dynamic> decodedDiscounts =
+            json.decode(discountsJson) as List<dynamic>;
+        for (final item in decodedDiscounts) {
+          if (item is Map<String, dynamic>) {
+            _discounts.add(BoletaDescuento.fromMap(item));
+          }
+        }
+      }
+
       _isLoaded = true;
     } catch (e) {
       debugPrint('Error cargando ventas locales: $e');
@@ -84,21 +104,70 @@ class SalesRepository extends ChangeNotifier {
     }
   }
 
-  /// Total recaudado acumulado (cantidad × precio unitario)
+  Future<bool> _persistDiscounts() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final jsonString = json.encode(_discounts.map((d) => d.toMap()).toList());
+      return await prefs.setString(_discountsStorageKey, jsonString);
+    } catch (e) {
+      debugPrint('Error al persistir descuentos offline: $e');
+      return false;
+    }
+  }
+
+  /// Total de descuentos activos en la boleta actual
+  double get totalDiscountsAmount =>
+      _discounts.fold(0.0, (sum, d) => sum + d.monto);
+
+  /// Descuentos aplicados a Efectivo
+  double get cashDiscountsAmount => _discounts
+      .where((d) => d.isEfectivo)
+      .fold(0.0, (sum, d) => sum + d.monto);
+
+  /// Descuentos aplicados a Yape
+  double get yapeDiscountsAmount =>
+      _discounts.where((d) => d.isYape).fold(0.0, (sum, d) => sum + d.monto);
+
+  /// Total recaudado acumulado (ventas menos descuentos aplicados)
   double get totalSalesAmount =>
-      _sales.fold(0.0, (sum, item) => sum + item.total);
+      _sales.fold(0.0, (sum, item) => sum + item.total) - totalDiscountsAmount;
 
-  /// Total recibido en Efectivo
+  /// Total recibido en Efectivo (restando descuentos de Efectivo)
   double get totalCashAmount =>
-      _sales.fold(0.0, (sum, item) => sum + item.cashAmount);
+      _sales.fold(0.0, (sum, item) => sum + item.cashAmount) -
+      cashDiscountsAmount;
 
-  /// Total recibido por Yape
+  /// Total recibido por Yape (restando descuentos de Yape)
   double get totalYapeAmount =>
-      _sales.fold(0.0, (sum, item) => sum + item.yapeAmount);
+      _sales.fold(0.0, (sum, item) => sum + item.yapeAmount) -
+      yapeDiscountsAmount;
 
   /// Total recibido por Tarjeta de crédito (incluyendo el 5% de comisión)
   double get totalCardAmount =>
       _sales.fold(0.0, (sum, item) => sum + item.cardAmount);
+
+  /// Añade un descuento a la boleta actual
+  Future<bool> addDiscount(BoletaDescuento discount) async {
+    _discounts.add(discount);
+    notifyListeners();
+    return await _persistDiscounts();
+  }
+
+  /// Elimina un descuento de la boleta actual
+  Future<bool> removeDiscount(String id) async {
+    _discounts.removeWhere((d) => d.id == id);
+    notifyListeners();
+    return await _persistDiscounts();
+  }
+
+  /// Actualiza la lista completa de descuentos de la boleta actual
+  Future<bool> setDiscounts(List<BoletaDescuento> nextDiscounts) async {
+    _discounts
+      ..clear()
+      ..addAll(nextDiscounts);
+    notifyListeners();
+    return await _persistDiscounts();
+  }
 
   /// Registra una nueva venta con validaciones estrictas
   Future<bool> recordSale(Sale sale) async {
@@ -134,7 +203,9 @@ class SalesRepository extends ChangeNotifier {
   /// Limpia todos los registros tanto en memoria como en almacenamiento local
   Future<bool> clearAll() async {
     _sales.clear();
+    _discounts.clear();
     notifyListeners();
+    await _persistDiscounts();
     return await _persistSales();
   }
 

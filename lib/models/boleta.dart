@@ -79,12 +79,50 @@ class BoletaItem {
   }
 }
 
+/// Representa un descuento aplicado a la boleta (ej. pago de personal, gastos, etc.)
+/// indicando el motivo/nombre, cuánto se resta y si se descuenta de Efectivo o Yape.
+class BoletaDescuento {
+  final String id;
+  final String nombre;
+  final double monto;
+  final String metodoPago; // 'Efectivo' o 'Yape'
+
+  const BoletaDescuento({
+    required this.id,
+    required this.nombre,
+    required this.monto,
+    required this.metodoPago,
+  });
+
+  bool get isYape => metodoPago.toLowerCase() == 'yape';
+  bool get isEfectivo => !isYape;
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'nombre': nombre,
+      'monto': monto,
+      'metodo_pago': metodoPago,
+    };
+  }
+
+  factory BoletaDescuento.fromMap(Map<String, dynamic> map) {
+    return BoletaDescuento(
+      id: (map['id'] ?? '').toString(),
+      nombre: (map['nombre'] ?? 'Descuento').toString(),
+      monto: ((map['monto'] ?? 0.0) as num).toDouble(),
+      metodoPago: (map['metodo_pago'] ?? 'Efectivo').toString(),
+    );
+  }
+}
+
 /// Modelo de Boleta de Venta emitida que agrupa los productos vendidos con fecha y hora actual.
 class Boleta {
   final String id;
   final String numero;
   final DateTime fecha;
   final List<BoletaItem> items;
+  final List<BoletaDescuento> descuentos;
   final double total;
   final double totalEfectivo;
   final double totalYape;
@@ -97,6 +135,7 @@ class Boleta {
     required this.numero,
     DateTime? fecha,
     required this.items,
+    this.descuentos = const [],
     double? total,
     double? totalEfectivo,
     double? totalYape,
@@ -104,7 +143,6 @@ class Boleta {
     int? cantidadProductos,
     this.nota,
   })  : fecha = fecha ?? DateTime.now(),
-        total = total ?? items.fold(0.0, (sum, i) => sum + i.subtotal),
         totalEfectivo = totalEfectivo ??
             items.fold(0.0, (sum, i) => sum + i.efectivoAmount),
         totalYape = totalYape ??
@@ -112,7 +150,43 @@ class Boleta {
         totalTarjeta = totalTarjeta ??
             items.fold(0.0, (sum, i) => sum + i.tarjetaAmount),
         cantidadProductos = cantidadProductos ??
-            items.fold(0, (sum, i) => sum + i.cantidad);
+            items.fold(0, (sum, i) => sum + i.cantidad),
+        total = total ??
+            (items.fold(0.0, (sum, i) => sum + i.subtotal) -
+                descuentos.fold(0.0, (sum, d) => sum + d.monto));
+
+  double get subtotalProductos =>
+      items.fold(0.0, (sum, i) => sum + i.subtotal);
+
+  double get totalDescuentos =>
+      descuentos.fold(0.0, (sum, d) => sum + d.monto);
+
+  double get descuentoEfectivo => descuentos
+      .where((d) => d.isEfectivo)
+      .fold(0.0, (sum, d) => sum + d.monto);
+
+  double get descuentoYape =>
+      descuentos.where((d) => d.isYape).fold(0.0, (sum, d) => sum + d.monto);
+
+  Boleta copyWith({
+    String? id,
+    String? numero,
+    DateTime? fecha,
+    List<BoletaItem>? items,
+    List<BoletaDescuento>? descuentos,
+    String? nota,
+  }) {
+    final nextItems = items ?? this.items;
+    final nextDescuentos = descuentos ?? this.descuentos;
+    return Boleta(
+      id: id ?? this.id,
+      numero: numero ?? this.numero,
+      fecha: fecha ?? this.fecha,
+      items: nextItems,
+      descuentos: nextDescuentos,
+      nota: nota ?? this.nota,
+    );
+  }
 
   String get fechaFormateada {
     final formatter = DateFormat('dd/MM/yyyy, hh:mm a');
@@ -157,6 +231,11 @@ class Boleta {
     if (totalTarjeta > 0) {
       buffer.writeln('Tarjeta:       S/. ${totalTarjeta.toStringAsFixed(2)}');
     }
+    for (final d in descuentos) {
+      buffer.writeln(
+        'Descuento (${d.nombre}) [${d.metodoPago}]: -S/. ${d.monto.toStringAsFixed(2)}',
+      );
+    }
     buffer.writeln('Total:         S/. ${total.toStringAsFixed(2)}');
     buffer.writeln('================================');
     buffer.writeln('    ¡Gracias por su compra!     ');
@@ -171,6 +250,7 @@ class Boleta {
       'numero': numero,
       'fecha': fecha.toIso8601String(),
       'items': items.map((i) => i.toMap()).toList(),
+      'descuentos': descuentos.map((d) => d.toMap()).toList(),
       'total': total,
       'total_efectivo': totalEfectivo,
       'total_yape': totalYape,
@@ -189,6 +269,14 @@ class Boleta {
           .toList();
     }
 
+    List<BoletaDescuento> parsedDescuentos = [];
+    if (map['descuentos'] is List) {
+      parsedDescuentos = (map['descuentos'] as List)
+          .whereType<Map<String, dynamic>>()
+          .map((d) => BoletaDescuento.fromMap(d))
+          .toList();
+    }
+
     return Boleta(
       id: (map['id'] ?? '').toString(),
       numero: (map['numero'] ?? 'B001-00001').toString(),
@@ -196,7 +284,10 @@ class Boleta {
           ? DateTime.tryParse(map['fecha'] as String) ?? DateTime.now()
           : DateTime.now(),
       items: parsedItems,
-      total: ((map['total'] ?? 0.0) as num).toDouble(),
+      descuentos: parsedDescuentos,
+      total: map['total'] != null
+          ? ((map['total'] ?? 0.0) as num).toDouble()
+          : null,
       totalEfectivo: ((map['total_efectivo'] ?? 0.0) as num).toDouble(),
       totalYape: ((map['total_yape'] ?? 0.0) as num).toDouble(),
       totalTarjeta: map['total_tarjeta'] != null

@@ -66,6 +66,7 @@ class BoletasRepository extends ChangeNotifier {
   /// Construye una boleta en memoria a partir de las ventas actuales (sin guardarla aún)
   Boleta buildBoletaFromSales(
     List<Sale> sales, {
+    List<BoletaDescuento> descuentos = const [],
     String? nota,
     DateTime? customDate,
   }) {
@@ -121,28 +122,42 @@ class BoletasRepository extends ChangeNotifier {
       numero: numeroFormateado,
       fecha: now,
       items: boletaItems,
+      descuentos: List<BoletaDescuento>.from(descuentos),
       nota: nota,
     );
   }
 
-  /// Guarda una boleta en el listado de boletas y la persiste localmente
+  /// Guarda o actualiza una boleta en el listado de boletas y la persiste localmente
   Future<bool> saveBoleta(Boleta boleta) async {
-    final alreadyExists = _boletas.any((b) => b.id == boleta.id);
-    if (!alreadyExists) {
+    final existingIdx = _boletas.indexWhere((b) => b.id == boleta.id);
+    if (existingIdx >= 0) {
+      _boletas[existingIdx] = boleta;
+    } else {
       _boletas.insert(0, boleta);
-      notifyListeners();
     }
+    notifyListeners();
+    return await _persistBoletas();
+  }
+
+  /// Actualiza una boleta si ya estaba guardada en el historial
+  Future<bool> updateBoletaIfSaved(Boleta boleta) async {
+    final existingIdx = _boletas.indexWhere((b) => b.id == boleta.id);
+    if (existingIdx < 0) return false;
+    _boletas[existingIdx] = boleta;
+    notifyListeners();
     return await _persistBoletas();
   }
 
   /// Crea y guarda una nueva boleta a partir de los productos registrados en ventas
   Future<Boleta> createBoletaFromSales(
     List<Sale> sales, {
+    List<BoletaDescuento> descuentos = const [],
     String? nota,
     DateTime? customDate,
   }) async {
     final boleta = buildBoletaFromSales(
       sales,
+      descuentos: descuentos,
       nota: nota,
       customDate: customDate,
     );

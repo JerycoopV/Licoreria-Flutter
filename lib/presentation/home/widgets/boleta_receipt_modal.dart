@@ -4,9 +4,10 @@ import '../../../models/boleta.dart';
 import '../../../repositories/boletas_repository.dart';
 import '../../../repositories/sales_repository.dart';
 import '../../boletas/boletas_screen.dart';
+import 'add_boleta_discount_modal.dart';
 
 /// Modal que muestra el ticket visual de la boleta generada con diseño realista de punto de venta.
-class BoletaReceiptModal extends StatelessWidget {
+class BoletaReceiptModal extends StatefulWidget {
   final Boleta boleta;
   final bool showClearOption;
 
@@ -33,7 +34,54 @@ class BoletaReceiptModal extends StatelessWidget {
   }
 
   @override
+  State<BoletaReceiptModal> createState() => _BoletaReceiptModalState();
+}
+
+class _BoletaReceiptModalState extends State<BoletaReceiptModal> {
+  late Boleta _boleta;
+
+  @override
+  void initState() {
+    super.initState();
+    _boleta = widget.boleta;
+  }
+
+  Future<void> _handleAddDiscount() async {
+    final discount = await AddBoletaDiscountModal.show(context);
+    if (!mounted || discount == null) return;
+
+    final nextDiscounts = [..._boleta.descuentos, discount];
+    final nextBoleta = _boleta.copyWith(descuentos: nextDiscounts);
+
+    setState(() {
+      _boleta = nextBoleta;
+    });
+
+    if (widget.showClearOption) {
+      await SalesRepository().setDiscounts(nextDiscounts);
+    }
+    await BoletasRepository().updateBoletaIfSaved(nextBoleta);
+  }
+
+  Future<void> _handleRemoveDiscount(String discountId) async {
+    final nextDiscounts =
+        _boleta.descuentos.where((d) => d.id != discountId).toList();
+    final nextBoleta = _boleta.copyWith(descuentos: nextDiscounts);
+
+    setState(() {
+      _boleta = nextBoleta;
+    });
+
+    if (widget.showClearOption) {
+      await SalesRepository().setDiscounts(nextDiscounts);
+    }
+    await BoletasRepository().updateBoletaIfSaved(nextBoleta);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final boleta = _boleta;
+    final showClearOption = widget.showClearOption;
     return Container(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.90,
@@ -486,7 +534,137 @@ class BoletaReceiptModal extends StatelessWidget {
                             ),
                           ),
 
+                        // Descuentos aplicados (después del total de Efectivo y Yape)
+                        if (boleta.descuentos.isNotEmpty) ...[
+                          const SizedBox(height: 6),
+                          ...boleta.descuentos.map((desc) {
+                            final isYape = desc.isYape;
+                            final methodColor =
+                                isYape ? AppColors.yape : AppColors.efectivo;
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.remove_circle_outline_rounded,
+                                    size: 14,
+                                    color: AppColors.error,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Expanded(
+                                    child: Wrap(
+                                      spacing: 6,
+                                      runSpacing: 2,
+                                      crossAxisAlignment:
+                                          WrapCrossAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Descuento (${desc.nombre})',
+                                          style: const TextStyle(
+                                            color: AppColors.textPrimary,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 6,
+                                            vertical: 1.5,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: methodColor.withValues(
+                                              alpha: 0.16,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            border: Border.all(
+                                              color: methodColor.withValues(
+                                                alpha: 0.45,
+                                              ),
+                                              width: 0.8,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            desc.metodoPago,
+                                            style: TextStyle(
+                                              color: methodColor,
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w800,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    '- S/. ${desc.monto.toStringAsFixed(2)}',
+                                    style: const TextStyle(
+                                      color: AppColors.error,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  InkWell(
+                                    onTap: () => _handleRemoveDiscount(desc.id),
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(3),
+                                      child: Icon(
+                                        Icons.close_rounded,
+                                        size: 15,
+                                        color: AppColors.textMuted,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
+                        ],
+
                         const SizedBox(height: 8),
+                        // Botón para añadir descuento a la boleta
+                        SizedBox(
+                          width: double.infinity,
+                          height: 38,
+                          child: OutlinedButton.icon(
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppColors.primary,
+                              side: BorderSide(
+                                color: AppColors.primary.withValues(alpha: 0.45),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 4,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            onPressed: _handleAddDiscount,
+                            icon: const Icon(
+                              Icons.add_circle_outline_rounded,
+                              size: 16,
+                              color: AppColors.primary,
+                            ),
+                            label: const FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                'Añadir descuento a la boleta',
+                                maxLines: 1,
+                                style: TextStyle(
+                                  fontSize: 12.5,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 10),
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 14,
